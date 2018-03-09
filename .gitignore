@@ -1,5 +1,34 @@
 node_modules/
 yarn.lock
 yarn-error.log
-.idea
+.idea/
 .DS_Store
+dist
+package-lock.json
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# sensitive data
+*.private.*
+
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea/
+.sass-cache
+__snapshots__
