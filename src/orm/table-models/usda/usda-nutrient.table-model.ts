@@ -8,6 +8,7 @@ export function usdaNutrientModel(DataTypes: SequelizeStatic, sequelize: Sequeli
 			nutrient_id: {
 				type: DataTypes.UUID,
 				primaryKey: true,
+
 			},
 			nutrient_name: {
 				type: DataTypes.STRING

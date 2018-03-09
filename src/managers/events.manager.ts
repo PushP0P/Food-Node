@@ -11,8 +11,18 @@ export class EventsManager {
 	}
 
 	private searchEvents(): void {
-		this.socket.on('SEARCH', async (requestEvent: RequestEvent, callback: (result: any) => any) => {
-			callback(await searchEvents(requestEvent, this.StoreManager));
+		this.socket.on(
+			'SEARCH',
+			async (
+				requestEvent: RequestEvent,
+				callback: (result: any) => any
+			) => {
+				callback(
+					await searchEvents(
+						requestEvent,
+						this.StoreManager
+					).catch(err => console.log('error events manager', err))
+				);
 		});
 	}
 }

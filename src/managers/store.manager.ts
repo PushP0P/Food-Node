@@ -5,20 +5,18 @@ import {
 	UserAttributes,
 	UserInstance,
 	UserModel
-} from '../orm/table-models/i-eat-what/attributes/i-eat-what/user.attributes';
+} from '../orm/table-models/i-eat-what/attributes/user.attributes';
 import {
-	FoodProductAttributes,
-	FoodProductInstance,
+	FoodProductAttributes, FoodProductInstance,
 	FoodProductModel
-} from '../orm/table-models/i-eat-what/attributes/i-eat-what/food-product.attributes';
-import { ReviewModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/review.attributes';
-import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/category.attributes';
+} from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
+import { ReviewModel } from '../orm/table-models/i-eat-what/attributes/review.attributes';
+import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/category.attributes';
 import { foodProductModel } from '../orm/table-models/i-eat-what/food-product.table-model';
 import { categoryModel } from '../orm/table-models/i-eat-what/category.table-model';
 import { reviewModel } from '../orm/table-models/i-eat-what/review.table-model';
 import {
-	USDANutrientAttributes,
-	USDANutrientInstance,
+	USDANutrientAttributes, USDANutrientInstance,
 	USDANutrientModel
 } from '../orm/table-models/usda/attributes/usda/usda-nutrient.attributes';
 import { USDADescriptionModel } from '../orm/table-models/usda/attributes/usda/usda-description.attributes';
@@ -39,11 +37,25 @@ export class StoreManager {
 	private USDADescription: USDADescriptionModel;
 	private _dbConfig: DBConfig = DB_CONFIG;
 
+	static foodStore = () => {
+		const storeManager = new StoreManager();
+		return {
+			newFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+				.foodTransactions('NEW_FOOD_PRODUCT', foodProps),
+			updateFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+				.foodTransactions('UPDATE_FOOD_PRODUCT', foodProps),
+			findReport: async (ndbno: string) => await storeManager.foodTransactions('FIND_REPORT', ndbno),
+			updateNutrients: async (nutrientProps: USDANutrientAttributes) => await storeManager
+				.foodTransactions('UPDATE_NUTRIENTS', nutrientProps)
+		};
+	}
+
 	constructor() {
 		this.sequelize = this.dbConfig(this._dbConfig);
 		this.modelsInit();
 		this.syncTables();
 	}
+
 
 	private modelsInit(): void {
 		this.User = userModel(sequelizeStatic, this.sequelize);
@@ -111,15 +123,5 @@ export class StoreManager {
 			default:
 				return Promise.reject('Food Error');
 		}
-	}
-
-	static foodStore = () => {
-		const storeManager = new StoreManager();
-		return {
-			newFoodProd: async(foodProps: FoodProductAttributes) => await storeManager.foodTransactions('NEW_FOOD_PRODUCT', foodProps),
-			updateFoodProd: async(foodProps: FoodProductAttributes) => await storeManager.foodTransactions('UPDATE_FOOD_PRODUCT', foodProps),
-			findReport: async (ndbno: string) => await storeManager.foodTransactions('FIND_REPORT', ndbno),
-			updateNutrients: async (nutrientProps: USDANutrientAttributes) => await storeManager.foodTransactions('UPDATE_NUTRIENTS', nutrientProps)
-		};
 	}
 }

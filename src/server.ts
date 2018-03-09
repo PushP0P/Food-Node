@@ -2,12 +2,13 @@ import * as SocketIO from 'socket.io';
 import { EventsManager } from './managers/events.manager';
 import express = require('express');
 import Socket = SocketIO.Socket;
-import * as http  from 'http';
+import * as https  from 'https';
+import { SERVER_OPTIONS } from './config/.local.config';
 
 export class Server {
 	private app: express.Application = express();
 	private port: number = 2820;
-	private server: http.Server = http.createServer(this.app);
+	private server: https.Server = https.createServer(SERVER_OPTIONS, this.app);
 	private socket: SocketIO.Server = require('socket.io')(2820, {
 		secure: true,
 		transports: ['websocket']

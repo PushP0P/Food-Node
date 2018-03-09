@@ -1,16 +1,15 @@
 import { Sequelize, SequelizeStatic } from 'sequelize';
-import { ReviewModel } from './attributes/i-eat-what/review.attributes';
+import { ReviewModel } from './attributes/review.attributes';
 
 export function reviewModel(DataTypes: SequelizeStatic, sequelize: Sequelize): ReviewModel {
 	return sequelize.define('review', {
 		review_id: {
-			type: DataTypes.UUID,
+			type: DataTypes.UUIDV4,
 			primaryKey: true,
 			defaultValue: DataTypes.UUIDV4,
 		},
 		ndbno: {
 			type: DataTypes.STRING,
-			unique: 'compositeIndex',
 			allowNull: true
 		},
 		text: {

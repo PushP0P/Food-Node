@@ -1,5 +1,5 @@
 import { Sequelize, SequelizeStatic } from 'sequelize';
-import { FoodProductModel } from './attributes/i-eat-what/food-product.attributes';
+import { FoodProductModel } from './attributes/food-product.attributes';
 
 export function foodProductModel(DataTypes: SequelizeStatic, sequelize: Sequelize): FoodProductModel {
 	return sequelize.define('food_product', {
@@ -15,6 +15,10 @@ export function foodProductModel(DataTypes: SequelizeStatic, sequelize: Sequeliz
 			type: DataTypes.STRING,
 			allowNull: true
 		},
+		food_group: {
+			type: DataTypes.STRING,
+			allowNull: true
+		},
 		is_rated:{
 			type: DataTypes.BOOLEAN,
 			allowNull: true
@@ -27,10 +31,6 @@ export function foodProductModel(DataTypes: SequelizeStatic, sequelize: Sequeliz
 			type: DataTypes.STRING,
 			allowNull: true
 		},
-		in_categories: {
-			type: DataTypes.ARRAY,
-			allowNull: true,
-		}
 	},{
 		freezeTableName: true,
 		paranoid: true,

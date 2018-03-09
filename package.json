@@ -11,6 +11,7 @@
     "colortape": "^0.1.2",
     "cors": "^2.8.4",
     "express": "^4.12.2",
+    "fs-extra": "^5.0.0",
     "sequelize": "^4.35.2",
     "socket.io": "^2.0.4",
     "sqlite3": "^3.1.13"

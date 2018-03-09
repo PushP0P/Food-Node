@@ -7,12 +7,10 @@ export interface FoodProductAttributes {
 	food_group: string;
 	is_rated: boolean;
 	avg_rating: number;
-	in_categories: string[];
 	ingredient_list_desc: string;
+	categories: string;
 }
 
 export interface FoodProductInstance extends Sequelize.Instance<FoodProductAttributes>, FoodProductAttributes {}
 
-export interface FoodProductModel extends Sequelize.Model<FoodProductInstance, FoodProductAttributes> {
-
-}
+export interface FoodProductModel extends Sequelize.Model<FoodProductInstance, FoodProductAttributes> {}

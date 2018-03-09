@@ -1,4 +1,4 @@
-import { FoodProductAttributes } from '../orm/table-models/i-eat-what/attributes/i-eat-what/food-product.attributes';
+import { FoodProductAttributes } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
 
 export interface FoodProduct extends FoodProductAttributes {
 	[props: string]: any;

@@ -9,6 +9,4 @@ export interface CategoryAttributes{
 
 export interface CategoryInstance extends Sequelize.Instance<CategoryAttributes>, CategoryAttributes{}
 
-export interface CategoryModel extends Sequelize.Model<CategoryInstance, CategoryAttributes> {
-
-}
+export interface CategoryModel extends Sequelize.Model<CategoryInstance, CategoryAttributes> { }
