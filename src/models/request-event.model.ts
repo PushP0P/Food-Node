@@ -1,4 +1,7 @@
 export interface RequestEvent {
-	type: string;
-	body?: any;
+	event: string;
+	payload: {
+		type: string;
+		body?: any;
+	};
 }

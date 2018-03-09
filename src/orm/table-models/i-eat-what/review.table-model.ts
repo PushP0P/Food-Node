@@ -1,4 +1,7 @@
-export function reviewModel(DataTypes, sequelize) {
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { ReviewModel } from './attributes/i-eat-what/review.attributes';
+
+export function reviewModel(DataTypes: SequelizeStatic, sequelize: Sequelize): ReviewModel {
 	return sequelize.define('review', {
 		review_id: {
 			type: DataTypes.UUID,
@@ -15,7 +18,7 @@ export function reviewModel(DataTypes, sequelize) {
 			allowNull: true
 		},
 		rating: {
-			type: DataTypes.NUMBER,
+			type: DataTypes.INTEGER,
 			allowNull: true
 		},
 	},{

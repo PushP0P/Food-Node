@@ -1,39 +1,40 @@
-import * as http from 'http';
+import * as SocketIO from 'socket.io';
 import { EventsManager } from './managers/events.manager';
 import express = require('express');
 import Socket = SocketIO.Socket;
+import * as http  from 'http';
 
 export class Server {
 	private app: express.Application = express();
-	private server: http.Server = http.createServer();
 	private port: number = 2820;
+	private server: http.Server = http.createServer(this.app);
 	private socket: SocketIO.Server = require('socket.io')(2820, {
 		secure: true,
-		transports: ['websocket'],
+		transports: ['websocket']
 	});
 
 	public static bootstrap(): Server {
 		return new Server();
-	};
+	}
 
 	constructor() {
 		this.init();
 		this.setupWS();
-	};
+	}
 
 	private setupWS(): void {
-		this.socket.on('connect', (socket: Socket) => {
+		this.socket.on('connect', async (socket: Socket) => {
 			console.log('client connected', socket.id);
-			new EventsManager(socket);
-
-			socket.on('disconnecting', (res: any) => {
+			await new EventsManager(socket);
+			socket.on(
+				'disconnecting',
+				(res: any) => {
 				console.log(`Client DC'd`);
 			});
 		});
 	}
 
 	private init(): void {
-		this.server = http.createServer(this.app);
 		this.server.listen(this.port, 'localhost');
 	}
 }

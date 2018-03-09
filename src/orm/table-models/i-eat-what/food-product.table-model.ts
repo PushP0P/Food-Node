@@ -1,13 +1,14 @@
-export function foodProductModel(DataTypes, sequelize) {
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { FoodProductModel } from './attributes/i-eat-what/food-product.attributes';
+
+export function foodProductModel(DataTypes: SequelizeStatic, sequelize: Sequelize): FoodProductModel {
 	return sequelize.define('food_product', {
-		ndb_food_number: {
-			type: DataTypes.UUID,
+		ndbno: {
+			type: DataTypes.STRING,
 			primaryKey: true,
-			defaultValue: DataTypes.UUIDV4,
 		},
 		food_name: {
 			type: DataTypes.STRING,
-			unique: 'compositeIndex',
 			allowNull: true
 		},
 		short_description: {
@@ -15,13 +16,21 @@ export function foodProductModel(DataTypes, sequelize) {
 			allowNull: true
 		},
 		is_rated:{
-			type: DataTypes.Boolean,
+			type: DataTypes.BOOLEAN,
 			allowNull: true
 		},
 		avg_rating: {
-			type: DataTypes.NUMBER,
+			type: DataTypes.INTEGER,
 			allowNull: true
 		},
+		ingredient_list_desc: {
+			type: DataTypes.STRING,
+			allowNull: true
+		},
+		in_categories: {
+			type: DataTypes.ARRAY,
+			allowNull: true,
+		}
 	},{
 		freezeTableName: true,
 		paranoid: true,

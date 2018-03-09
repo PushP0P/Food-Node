@@ -1,4 +1,7 @@
-export function categoryModel(DataTypes, sequelize) {
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { CategoryModel } from './attributes/i-eat-what/category.attributes';
+
+export function categoryModel(DataTypes: SequelizeStatic, sequelize: Sequelize): CategoryModel {
 	return sequelize.define('category', {
 		id: {
 			type: DataTypes.UUID,

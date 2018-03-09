@@ -1,9 +1,11 @@
-export function usdaDescriptionModel(DataTypes, sequelize) {
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { USDADescriptionModel } from './attributes/usda/usda-description.attributes';
+
+export function usdaDescriptionModel(DataTypes: SequelizeStatic, sequelize: Sequelize): USDADescriptionModel {
 	return sequelize.define('usda_description', {
 		ndbno: {
 			type: DataTypes.UUID,
 			primaryKey: true,
-			defaultValue: DataTypes.UUIDV4,
 		},
 		ndb_food_number: {
 			type: DataTypes.STRING

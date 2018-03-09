@@ -5,8 +5,9 @@ import { StoreManager } from './store.manager';
 
 export class EventsManager {
 	private StoreManager = new StoreManager();
-	constructor(private socket: Socket) {
 
+	constructor(private socket: Socket) {
+		this.searchEvents();
 	}
 
 	private searchEvents(): void {
@@ -14,5 +15,4 @@ export class EventsManager {
 			callback(await searchEvents(requestEvent, this.StoreManager));
 		});
 	}
-
 }

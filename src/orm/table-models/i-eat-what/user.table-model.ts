@@ -1,6 +1,9 @@
-export function userModel(DataTypes, sequelize) {
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { UserModel } from './attributes/i-eat-what/user.attributes';
+
+export function userModel(DataTypes: SequelizeStatic, sequelize: Sequelize): UserModel {
 	return sequelize.define('user', {
-		id: {
+		uid: {
 			type: DataTypes.UUID,
 			primaryKey: true,
 			defaultValue: DataTypes.UUIDV4,

@@ -206,6 +206,24 @@ export interface ListOptions {
 	format: string;
 }
 
+export interface FullFoodReport {
+	food: USDAFood;
+	desc: {
+		ndbno: string;
+		name: string;
+		sd: string;
+		group: string;
+		sn: string;
+		cn: string;
+		manu: string;
+	};
+	ing: {
+		desc: string,
+
+	};
+	nutrients: USDANutrient[];
+}
+
 export interface USDAFoodReport
 	extends USDAFood, USDAFoods,
 		USDADescMeta, USDAIngredients,
