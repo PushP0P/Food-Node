@@ -1,26 +1,34 @@
-export function userModel(DataTypes, sequelize) {
-	return sequelize.define('user', {
-		id: {
-			type: DataTypes.UUID,
-			primaryKey: true,
-			defaultValue: DataTypes.UUIDV4,
-		},
-		hasGoogle: {
-			type: DataTypes.STRING,
-			unique: 'compositeIndex',
-			allowNull: true
-		},
-		hasTwitter: {
-			type: DataTypes.STRING,
-			allowNull: true
-		},
-		hasLocal: {
-			type: DataTypes.STRING,
-			allowNull: true
-		},
-	},{
-		freezeTableName: true,
-		paranoid: true,
-		underscored: true,
-	});
+import { Sequelize, SequelizeStatic } from 'sequelize';
+import { UserModel } from './attributes/user.attributes';
+
+export function userModel(DataTypes: SequelizeStatic, sequelize: Sequelize): UserModel {
+	return sequelize.define(
+		'user',
+		{
+			uid: {
+				type: DataTypes.UUID,
+				primaryKey: true,
+				defaultValue: DataTypes.UUIDV4,
+			},
+			fire_base_token: {
+				type: DataTypes.STRING,
+				unique: 'compositeIndex'
+			},
+			hasGoogle: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false
+			},
+			hasTwitter: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false
+			},
+			hasLocal: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false
+			},
+		},{
+			freezeTableName: true,
+			paranoid: true,
+			underscored: true,
+		});
 }

@@ -1,21 +1,31 @@
 import * as sequelizeStatic from 'sequelize';
 import { DBConfig, DB_CONFIG } from '../orm/config';
 import { userModel } from '../orm/table-models/i-eat-what/user.table-model';
-import { UserAttributes, UserModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/user.attributes';
-import { FoodProductModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/food-product.attributes';
-import { ReviewModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/review.attributes';
-import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/i-eat-what/category.attributes';
+import {
+	UserAttributes,
+	UserInstance,
+	UserModel
+} from '../orm/table-models/i-eat-what/attributes/user.attributes';
+import {
+	FoodProductAttributes, FoodProductInstance,
+	FoodProductModel
+} from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
+import { ReviewModel } from '../orm/table-models/i-eat-what/attributes/review.attributes';
+import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/category.attributes';
 import { foodProductModel } from '../orm/table-models/i-eat-what/food-product.table-model';
 import { categoryModel } from '../orm/table-models/i-eat-what/category.table-model';
 import { reviewModel } from '../orm/table-models/i-eat-what/review.table-model';
-import { USDANutrientModel } from '../orm/table-models/usda/attributes/usda/usda-nutrient.attributes';
+import {
+	USDANutrientAttributes, USDANutrientInstance,
+	USDANutrientModel
+} from '../orm/table-models/usda/attributes/usda/usda-nutrient.attributes';
 import { USDADescriptionModel } from '../orm/table-models/usda/attributes/usda/usda-description.attributes';
 import { usdaDescriptionModel } from '../orm/table-models/usda/usda-description.table-model';
 import { usdaNutrientModel } from '../orm/table-models/usda/usda-nutrient.table-model';
 
 export class StoreManager {
-
 	public sequelize: sequelizeStatic.Sequelize;
+
 	// internal models
 	private User: UserModel;
 	private FoodProduct: FoodProductModel;
@@ -27,20 +37,42 @@ export class StoreManager {
 	private USDADescription: USDADescriptionModel;
 	private _dbConfig: DBConfig = DB_CONFIG;
 
+	static foodStore = () => {
+		const storeManager = new StoreManager();
+		return {
+			newFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+				.foodTransactions('NEW_FOOD_PRODUCT', foodProps),
+			updateFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+				.foodTransactions('UPDATE_FOOD_PRODUCT', foodProps),
+			findReport: async (ndbno: string) => await storeManager.foodTransactions('FIND_REPORT', ndbno),
+			updateNutrients: async (nutrientProps: USDANutrientAttributes) => await storeManager
+				.foodTransactions('UPDATE_NUTRIENTS', nutrientProps)
+		};
+	}
+
 	constructor() {
 		this.sequelize = this.dbConfig(this._dbConfig);
 		this.modelsInit();
 		this.syncTables();
 	}
 
+
 	private modelsInit(): void {
 		this.User = userModel(sequelizeStatic, this.sequelize);
 		this.FoodProduct = foodProductModel(sequelizeStatic, this.sequelize);
 		this.Category = categoryModel(sequelizeStatic, this.sequelize);
 		this.Review = reviewModel(sequelizeStatic, this.sequelize);
-		this.Category = categoryModel(sequelizeStatic, this.sequelize);
 		this.USDADescription = usdaDescriptionModel(sequelizeStatic, this.sequelize);
 		this.USDANutrient = usdaNutrientModel(sequelizeStatic, this.sequelize);
+
+		// Set relations
+		this.User.hasMany(this.Review);
+		this.Review.belongsTo(this.User);
+		this.Review.belongsTo(this.FoodProduct);
+		this.Category.hasMany(this.FoodProduct);
+		this.FoodProduct.hasMany(this.USDANutrient);
+		this.FoodProduct.hasOne(this.USDADescription);
+		this.USDADescription.belongsTo(this.FoodProduct);
 	}
 
 	private dbConfig(config: DBConfig): sequelizeStatic.Sequelize {
@@ -63,26 +95,33 @@ export class StoreManager {
 		});
 	}
 
-	private async userTransactions(type: string, payload?: any): Promise<UserAttributes | number| string | void | null> {
-
+	public async userTransactions(type: string, payload?: any): Promise<UserInstance | [number, UserInstance[]] | number | null> {
 		switch (type) {
 			case'CREATE_USER':
 				return await this.User.create(payload);
 			case'REMOVE_USER':
 				return await this.User.destroy(payload);
 			case'UPDATE_USER':
-				const userInstance = await this.User.find(payload.id);
+				return await this.User.update(payload.values, payload.options);
 			case'GET_USER':
 				return await this.User.find(payload);
 			default:
-				return Promise.reject('Search Error');
+				return Promise.reject('User Error');
 		}
 	}
 
-	private async foodTransaction(type: string, payload?: any) {
+	public async foodTransactions(type: string, payload?: any): Promise<USDANutrientInstance | [number, USDANutrientInstance[]] | FoodProductInstance | [number, FoodProductInstance[]] | number | boolean | null> {
 		switch (type) {
 			case'NEW_FOOD_PRODUCT':
-				return await this.USDADescription.create();
+				return await this.FoodProduct.create();
+			case'UPDATE_FOOD_PRODUCT':
+				return await this.FoodProduct.update(payload.values, payload.options);
+			case'FIND_REPORT':
+				return await this.FoodProduct.find(payload);
+			case'UPDATE_NUTRIENTS':
+				return await this.USDANutrient.insertOrUpdate(payload);
+			default:
+				return Promise.reject('Food Error');
 		}
 	}
 }

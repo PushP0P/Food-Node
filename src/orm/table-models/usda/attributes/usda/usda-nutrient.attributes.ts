@@ -5,7 +5,7 @@ export interface USDANutrientAttributes{
 	nutrient_name: string;
 }
 
-export interface USDANutrientInstance extends Sequelize.Instance<USDANutrientAttributes>, USDANutrientAttributes{}
+export interface USDANutrientInstance extends Sequelize.Instance<USDANutrientAttributes>, USDANutrientAttributes {}
 
 export interface USDANutrientModel extends Sequelize.Model<USDANutrientInstance, USDANutrientAttributes> {
 
