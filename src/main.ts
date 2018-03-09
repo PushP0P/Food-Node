@@ -1,4 +1,4 @@
-import Service from './service';
+import Service from './server';
 
 function boot() {
 	Service.bootstrap();
