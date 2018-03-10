@@ -1,5 +1,5 @@
-import { USDAItem } from './usda-report.model';
-import { USDAList } from './usda-report.model';
+import { USDAItem } from './usda-report.interface';
+import { USDAList } from './usda-report.interface';
 
 export interface USDAParams {
 	fg?: string;

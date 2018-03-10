@@ -1,4 +1,4 @@
-export interface NutritionixItemModel {
+export interface NutritionixItem {
 	foods: {
 		food_name: string;
 		brand_name: string;

@@ -1,6 +1,6 @@
-export async function concatParams(base: string, params: Map<string, string>): Promise<string> {
+export function concatParams(base: string, params: Map<string, string>): string {
 	let url: string = `${base}?`;
-	await params.forEach((value, key) => {
+	params.forEach((value, key) => {
 		url += `&${key}=${value}`;
 	});
 	return url;

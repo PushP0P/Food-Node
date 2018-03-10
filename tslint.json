@@ -33,7 +33,7 @@
     ],
     "member-ordering": [
       true,
-      "public-before-private",
+//      "public-before-private",
       "static-before-instance",
       "variables-before-functions"
     ],
@@ -75,8 +75,8 @@
     ],
     "radix": true,
     "semicolon": [
-      true,
-      "always"
+      true
+//      "always"
     ],
     "switch-default": true,
     "trailing-comma": false,

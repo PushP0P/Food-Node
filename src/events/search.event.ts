@@ -1,9 +1,8 @@
-import { RequestEvent } from '../models/request-event.model';
-import { StoreManager } from '../managers/store.manager';
+import { RequestEvent } from '../models/request-event.interface';
 import { listByTerms } from '../managers/search.manager';
 
 // tslint:disable
-export async function searchEvents(requestEvent: RequestEvent, storeManager: StoreManager): Promise<any> {
+export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
 	const {type, body} = requestEvent.payload;
 	console.log('TYPE', type);
 	switch (type) {

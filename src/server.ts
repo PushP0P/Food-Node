@@ -1,21 +1,22 @@
 import * as SocketIO from 'socket.io';
 import { EventsManager } from './managers/events.manager';
-import express = require('express');
 import Socket = SocketIO.Socket;
-import * as https  from 'https';
-import { SERVER_OPTIONS } from './config/.local.config';
+import * as http from 'http';
+import { Observer } from '@reactivex/rxjs';
+import { OutgoingHttpHeaders } from 'http';
+import * as https from 'https';
 
 export class Server {
-	private app: express.Application = express();
 	private port: number = 2820;
-	private server: https.Server = https.createServer(SERVER_OPTIONS, this.app);
-	private socket: SocketIO.Server = require('socket.io')(2820, {
+	private server: http.Server = http.createServer();
+	private eventManager: EventsManager;
+	private socket: SocketIO.Server = require('socket.io')(this.port, {
 		secure: true,
-		transports: ['websocket']
+		transports: ['websocket'],
 	});
 
 	public static bootstrap(): Server {
-		return new Server();
+		return new Server()
 	}
 
 	constructor() {
@@ -23,13 +24,35 @@ export class Server {
 		this.setupWS();
 	}
 
+	public static restRequester(url: string, headers: OutgoingHttpHeaders, body: any, observer: Observer<any>) {
+		const https = require('https');
+		https.get({
+			headers: headers,
+			body: body,
+			port: 8008,
+			rejectUnauthorized: (res) => {}
+		}, (res) => {
+			observer.next(res);
+			res.on('end', (chunk: any) => {
+				observer.complete();
+			});
+			res.on('data', (chunk: any) => {
+				observer.next(chunk);
+			});
+		}).on('error', (error) => {
+			observer.error(error);
+		}).once('pipe', (data) => {
+			console.log('pipe', data);
+		});
+	}
+
 	private setupWS(): void {
 		this.socket.on('connect', async (socket: Socket) => {
 			console.log('client connected', socket.id);
-			await new EventsManager(socket);
+			this.eventManager = new EventsManager(socket);
 			socket.on(
-				'disconnecting',
-				(res: any) => {
+			'disconnecting',
+			(res: any) => {
 				console.log(`Client DC'd`);
 			});
 		});

@@ -10,7 +10,10 @@ import {
 	FoodProductAttributes, FoodProductInstance,
 	FoodProductModel
 } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
-import { ReviewModel } from '../orm/table-models/i-eat-what/attributes/review.attributes';
+import {
+	ReviewAttributes, ReviewInstance,
+	ReviewModel
+} from '../orm/table-models/i-eat-what/attributes/review.attributes';
 import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/category.attributes';
 import { foodProductModel } from '../orm/table-models/i-eat-what/food-product.table-model';
 import { categoryModel } from '../orm/table-models/i-eat-what/category.table-model';
@@ -22,10 +25,14 @@ import {
 import { USDADescriptionModel } from '../orm/table-models/usda/attributes/usda/usda-description.attributes';
 import { usdaDescriptionModel } from '../orm/table-models/usda/usda-description.table-model';
 import { usdaNutrientModel } from '../orm/table-models/usda/usda-nutrient.table-model';
+import { type } from 'os';
 
 export class StoreManager {
 	public sequelize: sequelizeStatic.Sequelize;
 
+	static storeManager(): StoreManager {
+		return new StoreManager();
+	}
 	// internal models
 	private User: UserModel;
 	private FoodProduct: FoodProductModel;
@@ -50,12 +57,35 @@ export class StoreManager {
 		};
 	}
 
+	static userStore = () => {
+		const storeManager = StoreManager.storeManager();
+		return {
+			createUser: async (userProps: UserAttributes): (UserInstance | void) => {
+				await storeManager.userTransactions('CREATE_USER');
+			},
+			udateUser: async (userProps: UserAttributes): (UserInstance | void) => {
+				await storeManager.userTransactions('REMOVE_USER');
+			},
+			removeUser async (userId: string): (UserInstance | void) => {
+				await storeManager.userTransactions('UPDATE_USER');
+			},
+			addReview: async (reviewProps: ReviewAttributes): (ReviewInstance | void) => {
+				await storeManager.userTransactions('ADD_REVIEW');
+			},
+			removeReview: async (userProps: ReviewAttributes): (ReviewInstance | void) => {
+				await storeManager.userTransactions('REMOVE_UPDATE');
+			},
+			updateReview: async (reviewProps: ReviewAttributes): (ReviewInstance | void) => {
+				await storeManager.userTransactions('UPDATE_REVIEW');
+			},
+		};
+	}
+
 	constructor() {
 		this.sequelize = this.dbConfig(this._dbConfig);
 		this.modelsInit();
 		this.syncTables();
 	}
-
 
 	private modelsInit(): void {
 		this.User = userModel(sequelizeStatic, this.sequelize);
@@ -106,7 +136,7 @@ export class StoreManager {
 			case'GET_USER':
 				return await this.User.find(payload);
 			default:
-				return Promise.reject('User Error');
+				return await Promise.reject('User Error');
 		}
 	}
 
@@ -121,7 +151,7 @@ export class StoreManager {
 			case'UPDATE_NUTRIENTS':
 				return await this.USDANutrient.insertOrUpdate(payload);
 			default:
-				return Promise.reject('Food Error');
+				return await Promise.reject('Food Error');
 		}
 	}
 }
