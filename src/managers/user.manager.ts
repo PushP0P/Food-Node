@@ -10,5 +10,5 @@ function userManager(): UserManager {
 }
 
 userManager.prototype.createUser = function() {
-	StoreManager.
+
 };

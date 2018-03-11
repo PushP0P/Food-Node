@@ -4,7 +4,6 @@ import Socket = SocketIO.Socket;
 import * as http from 'http';
 import { Observer } from '@reactivex/rxjs';
 import { OutgoingHttpHeaders } from 'http';
-import * as https from 'https';
 
 export class Server {
 	private port: number = 2820;
@@ -24,7 +23,8 @@ export class Server {
 		this.setupWS();
 	}
 
-	public static restRequester(url: string, headers: OutgoingHttpHeaders, body: any, observer: Observer<any>) {
+	static restRequester(url: string, headers: OutgoingHttpHeaders, body: any, observer: Observer<any>) {
+		console.log('URL', url);
 		const https = require('https');
 		https.get({
 			headers: headers,

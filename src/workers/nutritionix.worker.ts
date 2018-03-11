@@ -5,7 +5,6 @@ import { Observable, Observer } from '@reactivex/rxjs';
 import Server from '../server';
 
 const base = NUTRITIONIX_CONFIG.endpoints.base;
-
 export function instantSearch(terms: string): Observable<NutritionixItem[]> {
 	const params: Map<string, string> = new Map();
 	params.set('query', terms);

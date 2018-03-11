@@ -10,7 +10,7 @@ export function searchByTerms(searchTerms: string): Observable<any> {
 	params.set('q', searchTerms);
 	params.set('format', 'JSON');
 	params.set('api_key', USDA_CONFIG.apiKey);
-	const endpoint = `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.search}`;
+	const endpoint = `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.search}/`;
 	const url: string = concatParams(endpoint, params);
 	return Observable.create((observer: Observer<any>) => {
 		Server.restRequester(url, {}, {}, observer);

@@ -1,31 +1,29 @@
 import * as sequelizeStatic from 'sequelize';
-import { DBConfig, DB_CONFIG } from '../orm/config';
-import { userModel } from '../orm/table-models/i-eat-what/user.table-model';
+import { DB_CONFIG, DBConfig } from '../orm/config';
+import { UserAttributes, UserInstance, UserModel } from '../orm/table-models/i-eat-what/attributes/user.attributes';
 import {
-	UserAttributes,
-	UserInstance,
-	UserModel
-} from '../orm/table-models/i-eat-what/attributes/user.attributes';
-import {
-	FoodProductAttributes, FoodProductInstance,
+	FoodProductAttributes,
+	FoodProductInstance,
 	FoodProductModel
 } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
 import {
-	ReviewAttributes, ReviewInstance,
+	ReviewAttributes,
+	ReviewInstance,
 	ReviewModel
 } from '../orm/table-models/i-eat-what/attributes/review.attributes';
 import { CategoryModel } from '../orm/table-models/i-eat-what/attributes/category.attributes';
+import { userModel } from '../orm/table-models/i-eat-what/user.table-model';
 import { foodProductModel } from '../orm/table-models/i-eat-what/food-product.table-model';
 import { categoryModel } from '../orm/table-models/i-eat-what/category.table-model';
 import { reviewModel } from '../orm/table-models/i-eat-what/review.table-model';
 import {
-	USDANutrientAttributes, USDANutrientInstance,
+	USDANutrientAttributes,
+	USDANutrientInstance,
 	USDANutrientModel
 } from '../orm/table-models/usda/attributes/usda/usda-nutrient.attributes';
 import { USDADescriptionModel } from '../orm/table-models/usda/attributes/usda/usda-description.attributes';
 import { usdaDescriptionModel } from '../orm/table-models/usda/usda-description.table-model';
 import { usdaNutrientModel } from '../orm/table-models/usda/usda-nutrient.table-model';
-import { type } from 'os';
 
 export class StoreManager {
 	public sequelize: sequelizeStatic.Sequelize;
@@ -33,6 +31,7 @@ export class StoreManager {
 	static storeManager(): StoreManager {
 		return new StoreManager();
 	}
+
 	// internal models
 	private User: UserModel;
 	private FoodProduct: FoodProductModel;
@@ -47,9 +46,9 @@ export class StoreManager {
 	static foodStore = () => {
 		const storeManager = new StoreManager();
 		return {
-			newFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+			newFoodProd: async (foodProps: FoodProductAttributes) => await storeManager
 				.foodTransactions('NEW_FOOD_PRODUCT', foodProps),
-			updateFoodProd: async(foodProps: FoodProductAttributes) => await storeManager
+			updateFoodProd: async (foodProps: FoodProductAttributes) => await storeManager
 				.foodTransactions('UPDATE_FOOD_PRODUCT', foodProps),
 			findReport: async (ndbno: string) => await storeManager.foodTransactions('FIND_REPORT', ndbno),
 			updateNutrients: async (nutrientProps: USDANutrientAttributes) => await storeManager
@@ -60,22 +59,22 @@ export class StoreManager {
 	static userStore = () => {
 		const storeManager = StoreManager.storeManager();
 		return {
-			createUser: async (userProps: UserAttributes): (UserInstance | void) => {
+			createUser: async (userProps: UserAttributes): Promise<(UserInstance | void)> => {
 				await storeManager.userTransactions('CREATE_USER');
 			},
-			udateUser: async (userProps: UserAttributes): (UserInstance | void) => {
+			updateUser: async (userProps: UserAttributes): Promise<(UserInstance | void)> => {
 				await storeManager.userTransactions('REMOVE_USER');
 			},
-			removeUser async (userId: string): (UserInstance | void) => {
+			removeUser: async (userId: string): Promise<(UserInstance | void)> => {
 				await storeManager.userTransactions('UPDATE_USER');
 			},
-			addReview: async (reviewProps: ReviewAttributes): (ReviewInstance | void) => {
+			addReview: async (reviewProps: ReviewAttributes): Promise<(ReviewInstance | void)> => {
 				await storeManager.userTransactions('ADD_REVIEW');
 			},
-			removeReview: async (userProps: ReviewAttributes): (ReviewInstance | void) => {
+			removeReview: async (userProps: ReviewAttributes): Promise<(ReviewInstance | void)> => {
 				await storeManager.userTransactions('REMOVE_UPDATE');
 			},
-			updateReview: async (reviewProps: ReviewAttributes): (ReviewInstance | void) => {
+			updateReview: async (reviewProps: ReviewAttributes): Promise<(ReviewInstance | void)> => {
 				await storeManager.userTransactions('UPDATE_REVIEW');
 			},
 		};
@@ -125,7 +124,9 @@ export class StoreManager {
 		});
 	}
 
-	public async userTransactions(type: string, payload?: any): Promise<UserInstance | [number, UserInstance[]] | number | null> {
+	public async userTransactions(
+		type: string, payload?: any
+	): Promise<UserInstance | [number, UserInstance[]] | number | null> {
 		switch (type) {
 			case'CREATE_USER':
 				return await this.User.create(payload);
@@ -140,7 +141,15 @@ export class StoreManager {
 		}
 	}
 
-	public async foodTransactions(type: string, payload?: any): Promise<USDANutrientInstance | [number, USDANutrientInstance[]] | FoodProductInstance | [number, FoodProductInstance[]] | number | boolean | null> {
+	public async foodTransactions(
+		type: string, payload?: any
+	): Promise<USDANutrientInstance
+		| [number, USDANutrientInstance[]]
+		| FoodProductInstance
+		| [number, FoodProductInstance[]]
+		| number
+		| boolean
+		| null> {
 		switch (type) {
 			case'NEW_FOOD_PRODUCT':
 				return await this.FoodProduct.create();
