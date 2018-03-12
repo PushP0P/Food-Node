@@ -11,4 +11,3 @@ tape.test('timing test', function (t: any) {
 	}, 100);
 
 });
-

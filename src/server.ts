@@ -1,9 +1,9 @@
 import * as SocketIO from 'socket.io';
-import { EventsManager } from './managers/events.manager';
-import Socket = SocketIO.Socket;
 import * as http from 'http';
-import { Observer } from '@reactivex/rxjs';
+import Socket = SocketIO.Socket;
+import { EventsManager } from './managers/events.manager';
 import { OutgoingHttpHeaders } from 'http';
+import { Observer } from '@reactivex/rxjs';
 
 export class Server {
 	private port: number = 2820;
@@ -24,7 +24,7 @@ export class Server {
 	}
 
 	static restRequester(url: string, headers: OutgoingHttpHeaders, body: any, observer: Observer<any>) {
-		console.log('URL', url);
+		console.log('restRequest URL', url);
 		const https = require('https');
 		https.get({
 			headers: headers,
@@ -47,6 +47,7 @@ export class Server {
 	}
 
 	private setupWS(): void {
+		console.log('Setting up socket client.');
 		this.socket.on('connect', async (socket: Socket) => {
 			console.log('client connected', socket.id);
 			this.eventManager = new EventsManager(socket);
@@ -59,7 +60,8 @@ export class Server {
 	}
 
 	private init(): void {
-		this.server.listen(this.port, 'localhost');
+		this.server.listen(this.port, '127.0.0.1');
+		console.log('listening on port', this.port);
 	}
 }
 

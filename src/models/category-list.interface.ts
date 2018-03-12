@@ -1,4 +1,4 @@
-export interface Categorie {
+export interface Category {
 	gluten: SantaClauseList;
 	milk: SantaClauseList;
 	eggs: SantaClauseList;

@@ -1,9 +1,9 @@
 import Socket = SocketIO.Socket;
 import { RequestEvent } from '../models/request-event.interface';
 import { searchEvents } from '../events/search.event';
-import { Observable } from '@reactivex/rxjs';
 import { FullFoodReport } from '../models/usda-report.interface';
 import { generateReport } from './search.manager';
+import { Observable } from '@reactivex/rxjs';
 
 export class EventsManager {
 
@@ -12,10 +12,9 @@ export class EventsManager {
 	}
 	private searchEvents(): void {
 
-		this.socket.on('SEARCH', (requestEvent: RequestEvent, callback: (result: any) => any) => {
-				searchEvents(requestEvent)
-					.catch((err) => console.log('error events manager', err))
-					.then(callback);
+		this.socket.on('SEARCH', async (requestEvent: RequestEvent, callback: ((result: any) => any)) => {
+			callback(await searchEvents(requestEvent));
+				// .catch((err) => console.log('error events manager', err))
 		});
 
 		this.socket.on('REPORT', (requestEvent: any, callback: any): Observable<FullFoodReport> =>
@@ -32,7 +31,5 @@ export class EventsManager {
 		this.socket.on('CREATE_USER', (requestEvent: RequestEvent, callback: (res: any) => any) => {
 
 		});
-
-
 	}
 }

@@ -1,6 +1,4 @@
 // tslint:disable
-import { StoreManager } from './store.manager';
-
 export interface  UserManager {
 
 }

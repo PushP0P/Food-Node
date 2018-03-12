@@ -3,8 +3,6 @@ import { concatParams } from '../utilities/url.helpers';
 import { Observable, Observer } from '@reactivex/rxjs';
 import Server from '../server';
 
-
-
 export function searchByTerms(searchTerms: string): Observable<any> {
 	const params = new Map<string, string>();
 	params.set('q', searchTerms);
