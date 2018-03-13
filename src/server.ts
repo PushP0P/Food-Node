@@ -3,7 +3,7 @@ import * as http from 'http';
 import Socket = SocketIO.Socket;
 import { EventsManager } from './managers/events.manager';
 import { OutgoingHttpHeaders } from 'http';
-import { Observer } from '@reactivex/rxjs';
+import { Observer } from '@reactivex/rxjs/dist/typings/Observer';
 
 export class Server {
 	private port: number = 2820;
@@ -14,13 +14,8 @@ export class Server {
 		transports: ['websocket'],
 	});
 
-	public static bootstrap(): Server {
-		return new Server()
-	}
-
-	constructor() {
-		this.init();
-		this.setupWS();
+	static bootstrap(): Server {
+		return new Server();
 	}
 
 	static restRequester(url: string, headers: OutgoingHttpHeaders, body: any, observer: Observer<any>) {
@@ -45,10 +40,15 @@ export class Server {
 			console.log('pipe', data);
 		});
 	}
+	constructor() {
+		this.init();
+		this.setupWS();
+	}
+
 
 	private setupWS(): void {
-		console.log('Setting up socket client.');
-		this.socket.on('connect', async (socket: Socket) => {
+		console.log('Setting up socket clienocket: Sockett.');
+		this.socket.on('connect', async (s) => {
 			console.log('client connected', socket.id);
 			this.eventManager = new EventsManager(socket);
 			socket.on(

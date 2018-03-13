@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "strict": true,
     "target": "es5",
-    "module": "commonjs",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "./src",
     "sourceMap": true,
-    "moduleResolution": "node",
+    "module": "commonjs",
+    "moduleResolution": "es6",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
@@ -19,9 +18,6 @@
   "exclude": [
     "node_modules"
   ],
-  "awesomeTypescriptLoaderOptions": {
-    "useWebpackText": true
-  },
   "compileOnSave": false,
   "buildOnSave": false
 }

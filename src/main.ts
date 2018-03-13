@@ -1,7 +1,3 @@
-import Service from './server';
-
-function boot() {
-	Service.bootstrap();
-}
-
-boot();
+import { Server } from './server';
+const server: any = Server.bootstrap();
+server();
