@@ -3,7 +3,7 @@ import { RequestEvent } from '../models/request-event.interface';
 import { searchEvents } from '../events/search.event';
 import { FullFoodReport } from '../models/usda-report.interface';
 import { generateReport } from './search.manager';
-import { Observable } from '@reactivex/rxjs';
+import { Observable } from 'rxjs/Observable';
 
 export class EventsManager {
 
@@ -12,9 +12,14 @@ export class EventsManager {
 	}
 	private searchEvents(): void {
 
-		this.socket.on('SEARCH', async (requestEvent: RequestEvent, callback: ((result: any) => any)) => {
-			callback(await searchEvents(requestEvent));
-				// .catch((err) => console.log('error events manager', err))
+		this.socket.on('SEARCH', async (
+			requestEvent: RequestEvent,
+			callback: ((result: any) => any)) => {
+				console.log('SEARCH hit', requestEvent);
+				callback(await searchEvents(requestEvent))
+					.catch (
+						(err) => console.log('error events manager', err)
+					);
 		});
 
 		this.socket.on('REPORT', (requestEvent: any, callback: any): Observable<FullFoodReport> =>
@@ -28,8 +33,13 @@ export class EventsManager {
 	}
 
 	private userEvents(): void {
-		this.socket.on('CREATE_USER', (requestEvent: RequestEvent, callback: (res: any) => any) => {
+		this.socket.on(
+			'CREATE_USER',
+			(
+				requestEvent: RequestEvent,
+				callback: (res: any) => any) => {
 
-		});
+		}
+		);
 	}
 }

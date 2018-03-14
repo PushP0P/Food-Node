@@ -1,49 +1,54 @@
 import { NUTRITIONIX_CONFIG } from '../config/.local.config';
-import { NutritionixItem } from '../models/nutritionix-item.interface';
 import { concatParams } from '../utilities/url.helpers';
-import { Observable, Observer } from '@reactivex/rxjs';
-import Server from '../server';
+import { APIRequestResult, restResponder } from '../utilities/restRequester';
 
 const Nutrient_Config: {[props: string]: any} = NUTRITIONIX_CONFIG;
 const API_KEY: string = Nutrient_Config.apiKey;
 const APP_ID: string = Nutrient_Config.appId;
 
-export function instantSearch(terms: string): Promise<NutritionixItem[]> {
 
-	const params: Map<string, string> = new Map();
-	params.set('query', terms);
-	const urlType: string = Nutrient_Config.endpoints.search.instant;
-	const url = `https://${concatParams( Nutrient_Config.endpoints.search.base + urlType, params)}`;
-
-	return Observable.create((observer: Observer<NutritionixItem[]>) => {
-		Server.restRequester(
-			url,
-			{
-				'x-app-key': API_KEY,
-				'x-app-id': APP_ID
-			},
-			{},
-			observer
-		);
-	}).toPromise();
+export async function nutrientsList(): Promise<APIRequestResult | void> {
+	const params: Map<string, string> = new Map<string, string>();
+	const hostName: string = Nutrient_Config.endpoints.base;
+	const path = concatParams( Nutrient_Config.endpoints.search.instant, params);
+	const headers: {} = {
+		'x-app-key': API_KEY,
+		'x-app-id': APP_ID
+	};
+	return await restResponder(hostName, path, headers, {})
+		.catch((err: any) => console.log('err', err));
 }
 
-export function itemSearch(itemPredicates: {
+export async function instantSearch(terms: string): Promise<APIRequestResult | void> {
+	const params: Map<string, string> = new Map<string, string>();
+	params.set('query', terms);
+	const hostName: string = Nutrient_Config.endpoints.base;
+	const path = concatParams( Nutrient_Config.endpoints.search.instant, params);
+	const headers: {} = {
+		'x-app-key': API_KEY,
+		'x-app-id': APP_ID
+	};
+	return await restResponder(hostName, path, headers, {})
+		.catch((err: any) => console.log('err', err));
+}
+
+export async function itemsSearch(itemPredicates: {
 	nix_item_id?: string,
 	upc?: string
-}): Observable<NutritionixItem> {
+}): Promise<APIRequestResult> {
+	const hostName: string = NUTRITIONIX_CONFIG.endpoints.base;
 	const params: Map<string, string> = new Map<string, string>();
+
 	params.set('x-app-id', NUTRITIONIX_CONFIG.appId);
-	params.set(' x-app-key', NUTRITIONIX_CONFIG.apiKey);
+	params.set('x-app-key', NUTRITIONIX_CONFIG.apiKey);
+
 	Object.keys(itemPredicates)
 		.forEach(key => {
 			params.set(key, itemPredicates[key]);
 		});
-	const url: string  = concatParams(
-		`${NUTRITIONIX_CONFIG.endpoints.base}${NUTRITIONIX_CONFIG.endpoints.search.item}`,
+	const path: string = concatParams(
+		`${NUTRITIONIX_CONFIG.endpoints.search.item}`,
 		params
 	);
-	return Observable.create((observer: Observer <NutritionixItem>) => {
-		Server.restRequester(url, {}, {}, observer);
-	});
+	return await restResponder(hostName, path, {}, {});
 }

@@ -1,80 +1,70 @@
 var webpack = require('webpack');
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var webpackMerge = require('webpack-merge');
-
 // backend
 
 // from http://jlongster.com/Backend-Apps-with-Webpack--Part-I
+var nodeModules = { classnames: 'commonjs classnames'};
 
-var nodeModules = fs.readdirSync('node_modules')
-    .filter(function(x) {
-        return ['.bin'].indexOf(x) === -1;
-    });
-
-// .forEach(function(mod) {
-// 	nodeModules[mod] = 'commonjs ' + mod;
-// });
+fs.readdirSync('node_modules')
+	.filter(function(x) {
+		return ['.bin'].indexOf(x) === -1;
+	})
+	.forEach(function(mod) {
+		nodeModules[mod] = 'commonjs ' + mod;
+});
 
 var backendConfig = {
     mode: 'development',
+	context: __dirname,
     entry: [
-        './src/main'
+        'main'
     ],
-    target: 'node',
-    output: {
-        path: path.join(__dirname, 'bundle'),
-        filename: 'backend.js'
-    },
+
+	resolveLoader: {
+		moduleExtensions: [
+			path.join(__dirname, "node_modules")
+		]
+	},
+	target: 'node',
     node: {
         __dirname: true,
         __filename: true
     },
-    externals: [
-        function(context, request, callback) {
-            var pathStart = request.split('/')[0];
-            if (nodeModules.indexOf(pathStart) >= 0) {
-                return callback(null, "commonjs " + request);
-            }
-            callback();
-        }
-    ],
-
-// recordsPath: path.join(__dirname, 'bundle/_records'),
+    externals: nodeModules,
     plugins: [
-// new WebpackShellPlugin({
-// 	onBuildEnd: ['node ./bundle/backend.js']
-// })
     ],
     module: {
         rules: [
-
-            {
+            // {
+            //     test: /\.ts$/,
+            //     loader: 'tslint-loader'
+            // },
+	        {
                 test: /\.ts$/,
-                loaders: [
-                    'typescript-loader',
-                    'tslint-loader'
-                ]
-            },{
-                test: /.*\/app\/.*\.js$/,
-                exclude: /.spec.js/, // excluding .spec files
-                loader: "uglify"
+                loader: 'ts-loader'
+                // loader: 'awesome-typescript-loader'
             }
+            // {
+            //     test: /bundle\/.*\.js$/,
+            //     exclude: /.spec.js/, // excluding .spec files
+            //     loader: "uglify"
+            // }
         ]
     }
-
 };
 
 var defaultConfig = {
-    devtool: "source-map",
-    output: {
-        filename: '[name].bundle.js',
-        sourceMapFilename: '[name].map',
-        chunkFilename: '[id].chunk.js'
-    },
+	output: {
+		filename: "[name].js",
+		libraryTarget: "commonjs",
+		library: "",
+		path: path.resolve(__dirname, "bundle")
+	},
     resolve: {
-        extensions: [ ".ts", ".js" ],
-        modules: [ path.resolve(__dirname, "node_modules") ]  // jshint ignore:line
+        extensions: [ ".ts" ],
+	    modules: [path.resolve(__dirname, "src"), "node_modules"]  // jshint ignore:line
     },
     node: {
         global: true,
@@ -85,8 +75,7 @@ var defaultConfig = {
         Buffer: false,
         clearImmediate: false,
         setImmediate: false
-    }
-
+    },
 };
 
 module.exports = webpackMerge(defaultConfig, backendConfig);
