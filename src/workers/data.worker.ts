@@ -1,6 +1,11 @@
 import { FoodProductAttributes } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
+<<<<<<< HEAD
 import { FullFoodReport} from '../models/usda-report.interface';
 import { FoodProduct } from '../models/food-product.interface';
+=======
+import { FullFoodReport} from '../models/usda-report.model';
+import { FoodProduct } from '../models/food-product.model';
+>>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
 
 // WIP
 export function createProductWithReport(usdaReport: FullFoodReport, ): FoodProductAttributes {
@@ -9,9 +14,15 @@ export function createProductWithReport(usdaReport: FullFoodReport, ): FoodProdu
 	const { ndbno, name, sd, group, cn, manu } = usdaReport.desc;
 
 
+<<<<<<< HEAD
 
 	// scan for qualified categories against nutrient list
 
+=======
+	// scan for qualified categories against nutrient list
+
+
+>>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
 	const foodProduct: FoodProduct = {
 		ndbno: ndbno,
 		categories: '',
@@ -28,6 +39,10 @@ export function createProductWithReport(usdaReport: FullFoodReport, ): FoodProdu
 		in_categories: []
 	};
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
 	// attach qualified categories
 
 	// scan for product type

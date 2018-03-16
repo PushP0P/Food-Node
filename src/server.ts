@@ -1,18 +1,20 @@
 import * as SocketIO from 'socket.io';
-import * as http from 'http';
-import Socket = SocketIO.Socket;
 import { EventsManager } from './managers/events.manager';
+import express = require('express');
+import Socket = SocketIO.Socket;
+import * as https  from 'https';
 import { OutgoingHttpHeaders } from 'http';
-import { Observer } from '@reactivex/rxjs/dist/typings/Observer';
+import { Observer } from 'rxjs/Observer';
 
 export class Server {
+	private app: express.Application = express();
 	private port: number = 2820;
-	private server: http.Server = http.createServer();
-	private eventManager: EventsManager;
-	private socket: SocketIO.Server = require('socket.io')(this.port, {
+	private server: https.Server = https.createServer(SERVER_OPTIONS, this.app);
+	private socket: SocketIO.Server = require('socket.io')(2820, {
 		secure: true,
-		transports: ['websocket'],
+		transports: ['websocket']
 	});
+	private eventManager: EventsManager;
 
 	static bootstrap(): Server {
 		return new Server();
@@ -44,14 +46,12 @@ export class Server {
 		this.init();
 		this.setupWS();
 	}
-
-
 	private setupWS(): void {
 		console.log('Setting up socket clienocket: Sockett.');
-		this.socket.on('connect', async (s) => {
+		this.socket.on('connect', async (socket) => {
 			console.log('client connected', socket.id);
 			this.eventManager = new EventsManager(socket);
-			socket.on(
+			this.socket.on(
 			'disconnecting',
 			(res: any) => {
 				console.log(`Client DC'd`);
