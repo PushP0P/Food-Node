@@ -3,22 +3,22 @@ export interface FoodProductMeta {
 }
 
 export interface FoodProduct  {
-	food_name: string;
-	brand_name: string;
-	group_name: string;
+	foodName: string;
+	brandName: string;
+	groupName: string;
 	metadata: FoodProductMeta;
 	source: string;
-	ndb_no: string;
+	ndbno: string;
 	tags: string[];
 	photo: FoodImages;
-	updated_at: number;
+	updatedAt: number;
 }
 
 export interface FoodImages {
 	brand_logo?: string;
 	thumb?: string;
-	highres?: string;
-	is_user_uploaded?: boolean;
+	highRes?: string;
+	isUserUploaded?: boolean;
 }
 
 export interface NixFoodItem extends FoodProduct {
@@ -33,7 +33,6 @@ export interface USDAFoodItem extends FoodProduct {
 }
 
 export class FoodProduct {
-
 	public foodName: string = 'no value';
 	public brandName: string = 'no value';
 	public groupName: string = 'no value';
@@ -44,47 +43,7 @@ export class FoodProduct {
 	public photo: FoodImages = <FoodImages> {};
 	public updatedAt: number = -1;
 
-	constructor(){}
-
-	public withFoodName(foodName: string): FoodProduct {
-		this.foodName = foodName;
-		return this;
-	}
-	public withBrandName(brandName: string): FoodProduct {
-		this.brandName = brandName;
-		return this;
-	}
-	public withMetadata(metadata: FoodProductMeta): FoodProduct {
-		this.metadata = metadata;
-		return this;
-	}
-	public withSource(source: string): FoodProduct {
-		this.source = source;
-		return this;
-	}
-	public withNdbno(ndbno: string): FoodProduct {
-		this.ndbno = ndbno;
-		return this;
-	}
-	public withTags(tags: string[]): FoodProduct {
-		this.tags = tags;
-		return this;
-	}
-	public withPhoto(photo: FoodImages): FoodProduct {
-		this.photo = photo;
-		return this;
-	}
-
-	public withUpdatedAt(updatedAt: number): FoodProduct {
-		this.updatedAt = updatedAt;
-		return this;
-	}
-
-	public withGroupName(groupName: string): FoodProduct {
-		this.groupName = groupName;
-		return this;
+	constructor() {
+		this.updatedAt = Date.now();
 	}
 }
-
-let fP = new FoodProduct().withFoodName('foo bro').withBrandName('really?')
-fP.foodName;

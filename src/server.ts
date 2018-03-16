@@ -45,7 +45,7 @@ export class Server {
 	}
 
 	private init(): void {
-		fetchMenuData();
+		fetchMenuData().catch(err => console.log('error menu', err));
 		this.server.listen(this.port, 'localhost');
 		console.log('server listening on', this.port);
 		process.on('uncaughtException', function (err: any) {

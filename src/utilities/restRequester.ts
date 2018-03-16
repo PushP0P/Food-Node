@@ -37,6 +37,6 @@ export async function restResponder(
 		req.on('error', (err) => {
 			reject(err);
 		});
-	req.end();
+		req.end();
 	});
 }

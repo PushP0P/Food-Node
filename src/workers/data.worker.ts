@@ -1,10 +1,16 @@
-import { FoodProductAttributes } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
 import { FoodProduct } from '../models/food-product.interface';
 import { groupSearch } from './usda.worker';
 import { SearchResultsList, ShortReport } from '../models/search.model';
+import { fetchMenuData } from '../models/menus/menu.model';
 
-// Fast Food
-export async function getFilteredFastFoodList(searchTerms: string ): Promise<FoodProductAttributes> {
+/**
+ * Find fast food restaurants that match the search terms and filtered
+ * by category selections.
+ * @param {string} searchTerms
+ * @param {string[]} categories
+ * @returns {Promise<Set<FoodProduct>>}
+ */
+export async function getFilteredFastFoodList(searchTerms: string, categories: string[]): Promise<Set<FoodProduct>> {
 	const foundFoodProducts: Set<FoodProduct> = new Set<FoodProduct>();
 	const noValue: string = 'no value';
 
@@ -13,24 +19,46 @@ export async function getFilteredFastFoodList(searchTerms: string ): Promise<Foo
 	const groupSearchResult: SearchResultsList = <SearchResultsList> await groupSearch('Fast Food', searchTerms);
 	const searchList: ShortReport[] = groupSearchResult.list.item;
 
-	// FF Name = CSV[0]
 	for (let i = 0; i < searchList.length; i++) {
 		const { group, name, ndbno } = searchList[i];
-		foundFoodProducts.add(new FoodProduct()
-			.withGroupName(group || noValue)
-			.withFoodName(name || noValue)
-			.withNdbno(ndbno || noValue));
+		const foodProduct: FoodProduct = new FoodProduct();
+		foodProduct.foodName = name || noValue;
+		foodProduct.groupName = group || noValue;
+		foodProduct.ndbno = ndbno || noValue;
 	}
 
-	// Menu.items && FF
+	const resultsByBrand = new Map<string, FoodProduct>();
+	foundFoodProducts.forEach((foodProduct: FoodProduct) => {
+		const names = foodProduct.foodName.split(',');
 
-	// Relative List
+		// todo Make regexp pattern
+		const brand = names[0].toUpperCase();
+		const name = names[0];
+		foodProduct.foodName = name;
+		foodProduct.brandName = brand;
+		resultsByBrand.set(brand, foodProduct);
+	});
 
-	// Mix Meta
+	const menus: Map<string, Set<FoodProduct>> = await fetchMenuData();
+	const matches: Set<FoodProduct> = new Set<FoodProduct>();
+	for (let key of menus.keys()) {
+		matches.add(resultsByBrand.get(key));
+	}
 
-	// return list
+	// filter categories
+	return (() => {
+		const refined = new Set<FoodProduct>();
 
-	return void 0;
+		for ( let product of matches.values()) {
+			for (let tag of product.tags) {
+				if (categories.indexOf(tag) === -1) {
+					refined.add(product);
+				}
+			}
+		}
+
+		return refined;
+	})();
 }
 
 // Packaged
