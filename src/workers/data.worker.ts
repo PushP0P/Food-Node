@@ -1,114 +1,61 @@
-import { FoodProductAttributes } from '../orm/table-models/i-eat-what/attributes/food-product.attributes';
-<<<<<<< HEAD
-import { FullFoodReport} from '../models/usda-report.interface';
 import { FoodProduct } from '../models/food-product.interface';
-=======
-import { FullFoodReport} from '../models/usda-report.model';
-import { FoodProduct } from '../models/food-product.model';
->>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
+import { SearchResultsList, ShortReport } from '../models/search.model';
+import { fetchMenuData } from '../models/menus/menu.model';
+import { groupSearch } from './usda.worker';
 
-// WIP
-export function createProductWithReport(usdaReport: FullFoodReport, ): FoodProductAttributes {
+/**
+ * Find fast food restaurants that match the search terms and filtered
+ * by category selections.
+ * @param {string} searchTerms
+ * @param {string[]} categories
+ * @returns {Promise<Set<FoodProduct>>}
+ */
+export async function getFilteredFastFoodList(searchTerms: string, categories: string[]): Promise<Set<FoodProduct>> {
+	const foundFoodProducts: Set<FoodProduct> = new Set<FoodProduct>();
+	const noValue: string = 'no value';
 
-	// grab report parts we want
-	const { ndbno, name, sd, group, cn, manu } = usdaReport.desc;
+	//Search USDA with FastFood and Terms
 
+	const groupSearchResult: SearchResultsList = <SearchResultsList> await groupSearch('Fast Food', searchTerms);
+	const resultsList: ShortReport[] = groupSearchResult.list.item;
 
-<<<<<<< HEAD
-
-	// scan for qualified categories against nutrient list
-
-=======
-	// scan for qualified categories against nutrient list
-
-
->>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
-	const foodProduct: FoodProduct = {
-		ndbno: ndbno,
-		categories: '',
-		food_group: group || 'no data',
-		food_name: name || 'no data',
-		manufacture_name: manu || 'no data',
-		short_description: sd || 'no data',
-		common_name: cn || 'no data',
-		scientific_name: sd || 'no data',
-		is_rated: false,
-		avg_rating: -1,
-		ingredient_list_desc: usdaReport.ing.desc,
-		nutrients: usdaReport.nutrients || [],
-		in_categories: []
-	};
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
-	// attach qualified categories
-
-	// scan for product type
-
-	// switch dependent on group
-	switch (usdaReport.desc.group) {
-		case "american indian/alaska native foods":
-
-		case "baby foods":
-
-		case "branded food products database":
-			// foodItemBuilder.withUpc(extractUPC(description.name));
-			// if (values.length > 2) {
-			// 	foodItemBuilder.withManu(values[1]);
-			// 	foodItemBuilder.withName(values[1]);
-			// 	return foodItemBuilder.build();
-			// } else {
-			// 	foodItemBuilder.withName(values[0]);
-			// }
-		case "baked products":
-
-		case "beef products":
-
-		case "beverages":
-
-		case "breakfast cereals":
-
-		case "cereal grains and pasta":
-
-		case "dairy and egg products":
-
-		case "fast foods":
-
-		case "fats and oils":
-
-		case "finfish and shellfish products":
-
-		case "fruits and fruit juices":
-
-		case "lamb, veal, and game products":
-
-		case "legumes and legume products":
-
-		case "meals, entrees, and side dishes":
-
-		case "nut and seed products":
-
-		case "pork products":
-
-		case "poultry products":
-
-		case "restaurant foods":
-
-		case "sausages and luncheon meats":
-
-		case "snacks":
-
-		case "soups, sauces, and gravies":
-
-		case "spices and herbs":
-
-		case "sweets":
-
-		case "vegetables and vegetable products":
-
-		default:
-			return foodProduct;
+	for (let i = 0; i < resultsList.length; i++) {
+		const {group, name, ndbno} = resultsList[i];
+		const foodProduct: FoodProduct = new FoodProduct();
+		foodProduct.foodName = name || noValue;
+		foodProduct.groupName = group || noValue;
+		foodProduct.ndbno = ndbno || noValue;
 	}
+
+	const resultsByBrand = new Map<string, FoodProduct>();
+	foundFoodProducts.forEach((foodProduct: FoodProduct) => {
+		const names = foodProduct.foodName.split(',');
+
+		// todo Make regexp pattern
+		const brand = names[0].toUpperCase();
+		const name = names[0];
+		foodProduct.foodName = name;
+		foodProduct.brandName = brand;
+		resultsByBrand.set(brand, foodProduct);
+	});
+
+	const menus: Map<string, Set<FoodProduct>> = await fetchMenuData();
+	const matches: Set<FoodProduct> = new Set<FoodProduct>();
+	for (let key of menus.keys()) {
+		matches.add(resultsByBrand.get(key));
+	}
+
+	return (() => {
+		const refined = new Set<FoodProduct>();
+
+		for ( let product of matches.values()) {
+			for (let tag of product.tags) {
+				if (categories.indexOf(tag) === -1) {
+					refined.add(product);
+				}
+			}
+		}
+
+		return refined;
+	})();
 }

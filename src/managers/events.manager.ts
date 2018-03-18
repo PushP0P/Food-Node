@@ -1,43 +1,49 @@
-import Socket = SocketIO.Socket;
 import { RequestEvent } from '../models/request-event.interface';
 import { searchEvents } from '../events/search.event';
-import { FullFoodReport } from '../models/usda-report.interface';
 import { generateReport } from './search.manager';
-import { StoreManager } from './store.manager';
-import { Observable } from 'rxjs/Observable';
+import SocketIO = require('socket.io');
 
 export class EventsManager {
-	private StoreManager = new StoreManager();
 
-	constructor(private socket: Socket) {
+	constructor(private socket: SocketIO.Socket) {
 		this.searchEvents();
+		this.userEvents();
 	}
+
 	private searchEvents(): void {
-		this.socket.on('SEARCH', async (requestEvent: RequestEvent, callback: ((result: any) => any)) => {
-			callback(await searchEvents(requestEvent));
-				// .catch((err) => console.log('error events manager', err))
+		this.socket.on(
+			'SEARCH',
+			async (requestEvent: RequestEvent,
+				callback: ((result: any) => any)
+			) => {
+				const result = await searchEvents(requestEvent)
+					.catch((err) => console.log('error events manager', err));
+				callback(result);
 		});
 
-		this.socket.on('REPORT', (requestEvent: any, callback: any): Observable<FullFoodReport> =>
-			callback(searchEvents(requestEvent))
-		);
-
-		this.socket.on('LIST', async (requestEvent: RequestEvent, callback: any) => {
+		this.socket.on(
+			'GET_REPORT',
+			async (
+				requestEvent: RequestEvent,
+				callback: any) => {
 			const result = await generateReport(requestEvent);
 			callback(result);
 		});
 	}
 
 	private userEvents(): void {
-		this.socket.on('CREATE_USER', (requestEvent: RequestEvent, callback: (res: any) => any) => {
 
+		this.socket.on(
+			'REVIEW',
+			(event: any, callback: any) => {
 		});
 
 		this.socket.on(
-			'SEARCH',
-			async (
-				requestEvent: RequestEvent,
-				callback: (result: any) => any
-			) => {});
+			'ACCOUNT',
+			(event: RequestEvent,
+			callback: (res: any) => any) => {
+
+		});
+
 	}
 }

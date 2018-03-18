@@ -11,7 +11,6 @@ export async function generateReport(requestEvent: RequestEvent): Promise<any> {
 		return report;
 	}
 }
-
 // todo All Food Report Generataions
 
 export async function listByTerms(searchTerms: string): Promise<any> {

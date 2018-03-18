@@ -83,7 +83,7 @@ export interface USDAFootnote {
 }
 
 /**
- * Reference source, usually a bibliographic citation, for the food
+ * Reference not_used, usually a bibliographic citation, for the food
  */
 export interface USDASource {
 	name_of_reference?: string;

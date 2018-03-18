@@ -1,90 +1,43 @@
-<<<<<<< HEAD
-import { USDA_CONFIG } from '../config/.local.config';
 import { concatParams } from '../utilities/url.helpers';
-import { Observable, Observer } from '@reactivex/rxjs';
-import Server from '../server';
-
-export function searchByTerms(searchTerms: string): Observable<any> {
-	const params = new Map<string, string>();
-	params.set('q', searchTerms);
-	params.set('format', 'JSON');
-	params.set('api_key', USDA_CONFIG.apiKey);
-	const endpoint = `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.search}/`;
-	const url: string = concatParams(endpoint, params);
-	return Observable.create((observer: Observer<any>) => {
-		Server.restRequester(url, {}, {}, observer);
-	});
-}
-
-export function getFoodReport(ndbno: string, type: string = 'f'): Observable<any> {
-	const params = new Map<string, string>();
-	params.set('type', type);
-	params.set('ndbno', ndbno);
-	params.set('format', 'JSON');
-	params.set('api_key', USDA_CONFIG.apiKey);
-	const baseURL: string = `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.report}`;
-	const url: string = concatParams(baseURL, params);
-	return Observable.create((observer: Observer<any>) => {
-		Server.restRequester(url, {}, {}, observer);
-	});
-}
-
-export function getList(ndbno: string, listType: string = 'n'): Observable<any> {
-=======
-import { ApiWorkerOptions, fetcher } from './api.worker';
+import { APIRequestResult, restResponder } from '../utilities/restRequester';
 import { USDA_CONFIG } from '../config/.local.config';
+import { SearchResultsList } from '../models/search.model';
 
-export async function searchByTerms(searchTerms: string): Promise<any> {
-	const params = new Map<string, string>();
-	params.set('api_key', USDA_CONFIG.apiKey);
-	params.set('q', searchTerms);
-	params.set('format', 'JSON');
+const usda_config = USDA_CONFIG;
 
-	const options: ApiWorkerOptions = {
-		endpoint: `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.search}/`,
-		params: params
-	};
-	const result = await fetcher(options);
-	console.log('Search result', result);
-	return result;
-}
-
-export async function getFoodReport(ndbno: string, type: string = 'f'): Promise<any> {
-	const params = new Map<string, string>();
-	params.set('api_key', USDA_CONFIG.apiKey);
-	params.set('type', type);
+export async function fullReport(ndbno: string): Promise<APIRequestResult | void> {
+	const params: Map<string, string> = new Map<string, string>();
 	params.set('ndbno', ndbno);
+	params.set('lt', 'f');
 	params.set('format', 'JSON');
-
-	const options: ApiWorkerOptions = {
-		endpoint: `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.report}/`,
-		params: params
-	};
-	const result = await fetcher(options);
-	console.log('Report result', result);
-	return result;
+	params.set('api_key', usda_config.apiKey);
+	const hostName: string = usda_config.endpoints.base;
+	const path = concatParams( usda_config.endpoints.report.item, params);
+	return await restResponder(hostName, path, {}, {})
+		.catch((err: any) => console.log('err', err));
 }
 
-export async function getList(ndbno: string, listType: string = 'n'): Promise<any> {
->>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
-	const params = new Map<string, string>();
-	params.set('api_key', USDA_CONFIG.apiKey);
-	params.set('max', '300');
-	params.set('lt', 'n');
+export async function groupSearch(searchTerm: string, foodGroupId: string): Promise<SearchResultsList | void> {
+	const params: Map<string, string> = new Map<string, string>();
+	params.set('fg', foodGroupId);
+	params.set('q', searchTerm);
+	params.set('lt', 'fg');
 	params.set('format', 'JSON');
-<<<<<<< HEAD
-	const base: string = `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.list}`;
-	const url: string = concatParams(base, params);
-	return Observable.create((observer: Observer<any>) => {
-		Server.restRequester(url, {}, {}, observer);
-	});
-=======
-	const options: ApiWorkerOptions = {
-		endpoint: `https://${USDA_CONFIG.endpoints.base}/${USDA_CONFIG.endpoints.list}/`,
-		params: params
-	};
-	const result = await fetcher(options);
-	console.log('List result for ', result);
-	return result;
->>>>>>> 69abcaee36e9458273ca320cf4727d61c7013767
+	params.set('api_key', usda_config.apiKey);
+	const hostName: string = usda_config.endpoints.base;
+	const path = concatParams( usda_config.endpoints.report.item, params);
+	return await restResponder(hostName, path, {}, {})
+		.catch((err: any) => console.log('err', err));
+}
+
+export async function searchByTerms(searchTerm: string): Promise<APIRequestResult | void> {
+	const params: Map<string, string> = new Map<string, string>();
+	params.set('q', searchTerm);
+	params.set('lt', 'f');
+	params.set('format', 'JSON');
+	params.set('api_key', usda_config.apiKey);
+	const hostName: string = usda_config.endpoints.base;
+	const path = concatParams(usda_config.endpoints.report.item, params);
+	return await restResponder(hostName, path, {}, {})
+		.catch((err: any) => console.log('err', err));
 }
