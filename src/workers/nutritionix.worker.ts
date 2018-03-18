@@ -6,7 +6,6 @@ const Nutrient_Config: {[props: string]: any} = NUTRITIONIX_CONFIG;
 const API_KEY: string = Nutrient_Config.apiKey;
 const APP_ID: string = Nutrient_Config.appId;
 
-
 export async function nutrientsList(): Promise<APIRequestResult | void> {
 	const params: Map<string, string> = new Map<string, string>();
 	const hostName: string = Nutrient_Config.endpoints.base;

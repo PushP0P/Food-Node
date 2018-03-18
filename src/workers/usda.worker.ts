@@ -30,14 +30,14 @@ export async function groupSearch(searchTerm: string, foodGroupId: string): Prom
 		.catch((err: any) => console.log('err', err));
 }
 
-export async function searchByTerm(searchTerm: string): Promise<APIRequestResult | void> {
+export async function searchByTerms(searchTerm: string): Promise<APIRequestResult | void> {
 	const params: Map<string, string> = new Map<string, string>();
 	params.set('q', searchTerm);
 	params.set('lt', 'f');
 	params.set('format', 'JSON');
 	params.set('api_key', usda_config.apiKey);
 	const hostName: string = usda_config.endpoints.base;
-	const path = concatParams( usda_config.endpoints.report.item, params);
+	const path = concatParams(usda_config.endpoints.report.item, params);
 	return await restResponder(hostName, path, {}, {})
 		.catch((err: any) => console.log('err', err));
 }

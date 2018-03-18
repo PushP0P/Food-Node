@@ -1,7 +1,7 @@
 import { FoodProduct } from '../models/food-product.interface';
-import { groupSearch } from './usda.worker';
 import { SearchResultsList, ShortReport } from '../models/search.model';
 import { fetchMenuData } from '../models/menus/menu.model';
+import { groupSearch } from './usda.worker';
 
 /**
  * Find fast food restaurants that match the search terms and filtered
@@ -17,10 +17,10 @@ export async function getFilteredFastFoodList(searchTerms: string, categories: s
 	//Search USDA with FastFood and Terms
 
 	const groupSearchResult: SearchResultsList = <SearchResultsList> await groupSearch('Fast Food', searchTerms);
-	const searchList: ShortReport[] = groupSearchResult.list.item;
+	const resultsList: ShortReport[] = groupSearchResult.list.item;
 
-	for (let i = 0; i < searchList.length; i++) {
-		const { group, name, ndbno } = searchList[i];
+	for (let i = 0; i < resultsList.length; i++) {
+		const {group, name, ndbno} = resultsList[i];
 		const foodProduct: FoodProduct = new FoodProduct();
 		foodProduct.foodName = name || noValue;
 		foodProduct.groupName = group || noValue;
@@ -45,7 +45,6 @@ export async function getFilteredFastFoodList(searchTerms: string, categories: s
 		matches.add(resultsByBrand.get(key));
 	}
 
-	// filter categories
 	return (() => {
 		const refined = new Set<FoodProduct>();
 
@@ -60,5 +59,3 @@ export async function getFilteredFastFoodList(searchTerms: string, categories: s
 		return refined;
 	})();
 }
-
-// Packaged

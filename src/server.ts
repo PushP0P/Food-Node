@@ -1,7 +1,7 @@
 import * as https from 'https';
 import { EventsManager } from './managers/events.manager';
 import { SERVER_CONFIG } from './config/.local.config';
-import { fetchMenuData } from './models/menus/menu.model';
+import *  as SocketIO from 'socket.io';
 
 export class Server {
 
@@ -14,7 +14,6 @@ export class Server {
 		res.on('data', (chunk: any) => {
 			console.log('DATA for Res', chunk);
 		});
-
 	});
 
 	private eventManager: EventsManager;
@@ -45,7 +44,6 @@ export class Server {
 	}
 
 	private init(): void {
-		fetchMenuData().catch(err => console.log('error menu', err));
 		this.server.listen(this.port, 'localhost');
 		console.log('server listening on', this.port);
 		process.on('uncaughtException', function (err: any) {

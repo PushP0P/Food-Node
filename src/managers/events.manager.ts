@@ -1,17 +1,16 @@
-import Socket = SocketIO.Socket;
 import { RequestEvent } from '../models/request-event.interface';
 import { searchEvents } from '../events/search.event';
 import { generateReport } from './search.manager';
+import SocketIO = require('socket.io');
 
 export class EventsManager {
 
-	constructor(private socket: Socket) {
+	constructor(private socket: SocketIO.Socket) {
 		this.searchEvents();
 		this.userEvents();
 	}
 
 	private searchEvents(): void {
-
 		this.socket.on(
 			'SEARCH',
 			async (requestEvent: RequestEvent,
@@ -45,5 +44,6 @@ export class EventsManager {
 			callback: (res: any) => any) => {
 
 		});
+
 	}
 }
