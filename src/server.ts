@@ -6,6 +6,7 @@ import *  as SocketIO from 'socket.io';
 export class Server {
 
 	private port: number = 4123;
+
 	private server: https.Server = https.createServer({
 		key: SERVER_CONFIG.key,
 		cert: SERVER_CONFIG.cert,

@@ -21,11 +21,11 @@ export async function groupSearch(searchTerm: string, foodGroupId: string): Prom
 	const params: Map<string, string> = new Map<string, string>();
 	params.set('fg', foodGroupId);
 	params.set('q', searchTerm);
-	params.set('lt', 'fg');
+	params.set('lt', 'g');
 	params.set('format', 'JSON');
 	params.set('api_key', usda_config.apiKey);
 	const hostName: string = usda_config.endpoints.base;
-	const path = concatParams( usda_config.endpoints.report.item, params);
+	const path = concatParams( usda_config.endpoints.search.groups, params);
 	return await restResponder(hostName, path, {}, {})
 		.catch((err: any) => console.log('err', err));
 }

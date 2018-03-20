@@ -36,18 +36,21 @@ export async function fetchMenuData(): Promise<Map<string, Set<FoodProduct>>> {
 
 			let tags: string[] = [];
 
-			foodProduct.foodName =  row.getElementsByTagName('td')[0].innerHTML;
-			for (let j = 1; j < CATEGORIES.length + 1; j++) {
-
-			if (row[j]) {
-					const ex: string = row[j].innerHTML;
-					if (ex === 'x') {
-						tags = [...tags, CATEGORIES[j]];
+			const tds = row.getElementsByTagName('td');
+			if (tds.length > 0) {
+				console.log('TDs', tds[0].innerHTML);
+				foodProduct.foodName = tds[0].innerHTML;
+				for (let j = 1; j < CATEGORIES.length + 1; j++) {
+					if (row[j]) {
+						const ex: string = row[j].innerHTML;
+						if (ex === 'x') {
+							tags = [...tags, CATEGORIES[j]];
+						}
+						foodProduct.tags = tags;
 					}
-					foodProduct.tags = tags;
 				}
+				foodProducts.add(foodProduct);
 			}
-			foodProducts.add(foodProduct);
 		}
 		menus.set(brand, foodProducts);
 	}

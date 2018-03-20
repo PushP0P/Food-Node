@@ -1,7 +1,8 @@
 import { FoodProduct } from '../models/food-product.interface';
 import { SearchResultsList, ShortReport } from '../models/search.model';
-import { fetchMenuData } from '../models/menus/menu.model';
 import { groupSearch } from './usda.worker';
+import * as xlsx from 'xlsx';
+import { LOCAL } from '../config/.local.config';
 
 /**
  * Find fast food restaurants that match the search terms and filtered
@@ -11,12 +12,15 @@ import { groupSearch } from './usda.worker';
  * @returns {Promise<Set<FoodProduct>>}
  */
 export async function getFilteredFastFoodList(searchTerms: string, categories: string[]): Promise<Set<FoodProduct>> {
+	const refined = new Set<FoodProduct>();
+	const matches: Set<FoodProduct> = new Set<FoodProduct>();
 	const foundFoodProducts: Set<FoodProduct> = new Set<FoodProduct>();
+	const menus = sheetsToMap(LOCAL.filePaths.MENUS_XLSX);
 	const noValue: string = 'no value';
 
 	//Search USDA with FastFood and Terms
 
-	const groupSearchResult: SearchResultsList = <SearchResultsList> await groupSearch('Fast Food', searchTerms);
+	const groupSearchResult: SearchResultsList = <SearchResultsList> await groupSearch(searchTerms, '2100');
 	const resultsList: ShortReport[] = groupSearchResult.list.item;
 
 	for (let i = 0; i < resultsList.length; i++) {
@@ -39,23 +43,31 @@ export async function getFilteredFastFoodList(searchTerms: string, categories: s
 		resultsByBrand.set(brand, foodProduct);
 	});
 
-	const menus: Map<string, Set<FoodProduct>> = await fetchMenuData();
-	const matches: Set<FoodProduct> = new Set<FoodProduct>();
-	for (let key of menus.keys()) {
-		matches.add(resultsByBrand.get(key));
+	// Get Menu data and match
+	//
+	// const menus: Map<string, Set<FoodProduct>> = await fetchMenuData();
+
+	for (let menu of menus)  {
+		// matches.add(resultsByBrand.get(key));
+		console.log('menu', menu);
 	}
 
-	return (() => {
-		const refined = new Set<FoodProduct>();
-
-		for ( let product of matches.values()) {
-			for (let tag of product.tags) {
-				if (categories.indexOf(tag) === -1) {
-					refined.add(product);
-				}
+	for ( let product of matches.values()) {
+		for (let tag of product.tags) {
+			if (categories.indexOf(tag) === -1) {
+				refined.add(product);
 			}
 		}
+	}
+	return refined;
+}
 
-		return refined;
-	})();
+export function sheetsToMap(filePath: string): Map<string,{[props: string]: any}[]> {
+	const response: Map<string, any[]> = new Map<string, any[]>();
+	const workbook = xlsx.readFile(__dirname + filePath);
+	for (let i = 0; i < workbook.SheetNames.length; i++) {
+		const jsonSheet: {[props: string]: any}[] = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+		response.set(workbook.SheetNames[i], jsonSheet);
+	}
+	return response;
 }
