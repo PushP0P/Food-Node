@@ -4,12 +4,17 @@ import { JSDOM } from 'jsdom';
 import * as Path from 'path';
 import { CATEGORIES } from '../category.model';
 
+export interface MenusMap {
+	resterauntId: string;
+	menu: {[props: string]: any};
+}
+
 /**
- * fetchMenuData() Retrieves all html files form child 'html' dir and
+ * scrapeMenuData() Retrieves all html files form child 'html' dir and
  * builds and initializes a new FoodProduct class.
  * @returns {Promise<Map<string, Set<FoodProduct>>>}
  */
-export async function fetchMenuData(): Promise<Map<string, Set<FoodProduct>>> {
+export async function scrapeMenuData(): Promise<Map<string, Set<FoodProduct>>> {
 
 	// HTML Import
 

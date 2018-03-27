@@ -1,18 +1,17 @@
 import { IncomingMessage, OutgoingHttpHeaders } from 'http';
-import { URL } from 'url';
 
-export interface APIRequestResult {
+export interface NutritionixAPIRequestResult {
 	branded: {[props: string]: string}[];
 }
 
-export async function restResponder(
+export async function getResponder(
 	hostName: string, path: string,
 	headers: OutgoingHttpHeaders, body: any
 	// todo fix any
-): Promise<APIRequestResult | any> {
-	console.log('restResponder', hostName, path, headers, body);
+): Promise<NutritionixAPIRequestResult | any> {
+	console.log('getResponder', hostName, path, headers, body);
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-	return await <APIRequestResult> await new Promise(
+	return await <NutritionixAPIRequestResult> await new Promise(
 		(resolve, reject): void => {
 		const https = require('https');
 		// const options: {} = {

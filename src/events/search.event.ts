@@ -1,7 +1,7 @@
 import { packForTransport, RequestEvent } from '../models/request-event.interface';
 import { instantSearch, itemsSearch, nutrientsList } from '../workers/nutritionix.worker';
 import { fullReport } from '../workers/usda.worker';
-import { getFilteredFastFoodList } from '../workers/data.worker';
+import { getFilteredFastFoodList } from '../workers/food.worker';
 
 // tslint:disable
 export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
