@@ -1,12 +1,12 @@
 import { NUTRITIONIX_CONFIG } from '../config/.local.config';
 import { concatParams } from '../utilities/url.helpers';
-import { APIRequestResult, restResponder } from '../utilities/restRequester';
+import { NutritionixAPIRequestResult, getResponder } from '../utilities/restRequester';
 
 const Nutrient_Config: {[props: string]: any} = NUTRITIONIX_CONFIG;
 const API_KEY: string = Nutrient_Config.apiKey;
 const APP_ID: string = Nutrient_Config.appId;
 
-export async function nutrientsList(): Promise<APIRequestResult | void> {
+export async function nutrientsList(): Promise<NutritionixAPIRequestResult | void> {
 	const params: Map<string, string> = new Map<string, string>();
 	const hostName: string = Nutrient_Config.endpoints.base;
 	const path = concatParams( Nutrient_Config.endpoints.search.instant, params);
@@ -14,11 +14,11 @@ export async function nutrientsList(): Promise<APIRequestResult | void> {
 		'x-app-key': API_KEY,
 		'x-app-id': APP_ID
 	};
-	return await restResponder(hostName, path, headers, {})
+	return await getResponder(hostName, path, headers, {})
 		.catch((err: any) => console.log('err', err));
 }
 
-export async function instantSearch(terms: string): Promise<APIRequestResult | void> {
+export async function instantSearch(terms: string): Promise<NutritionixAPIRequestResult | void> {
 	const params: Map<string, string> = new Map<string, string>();
 	params.set('query', terms);
 	const hostName: string = Nutrient_Config.endpoints.base;
@@ -27,14 +27,14 @@ export async function instantSearch(terms: string): Promise<APIRequestResult | v
 		'x-app-key': API_KEY,
 		'x-app-id': APP_ID
 	};
-	return await restResponder(hostName, path, headers, {})
+	return await getResponder(hostName, path, headers, {})
 		.catch((err: any) => console.log('err', err));
 }
 
 export async function itemsSearch(itemPredicates: {
 	nix_item_id?: string,
 	upc?: string
-}): Promise<APIRequestResult> {
+}): Promise<NutritionixAPIRequestResult> {
 	const hostName: string = NUTRITIONIX_CONFIG.endpoints.base;
 	const params: Map<string, string> = new Map<string, string>();
 
@@ -49,5 +49,5 @@ export async function itemsSearch(itemPredicates: {
 		`${NUTRITIONIX_CONFIG.endpoints.search.item}`,
 		params
 	);
-	return await restResponder(hostName, path, {}, {});
+	return await getResponder(hostName, path, {}, {});
 }

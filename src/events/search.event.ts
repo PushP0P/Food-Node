@@ -1,6 +1,10 @@
 import { packForTransport, RequestEvent } from '../models/request-event.interface';
 import { instantSearch, itemsSearch, nutrientsList } from '../workers/nutritionix.worker';
 import { fullReport } from '../workers/usda.worker';
+<<<<<<< HEAD
+import { getFilteredFastFoodList } from '../workers/food.worker';
+=======
+>>>>>>> a34d7235fa19f9568b489dbbf81285448d999742
 
 // tslint:disable
 export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
@@ -24,7 +28,11 @@ export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
 			console.log('result', result);
 			return packForTransport(result);
 		case'PACKAGE_SEARCH':
+<<<<<<< HEAD
+			result = await getFilteredFastFoodList(body, [])
+=======
 			result = await instantSearch(body)
+>>>>>>> a34d7235fa19f9568b489dbbf81285448d999742
 				.catch((err: {}) => console.log('err', err));
 			console.log('result', result);
 			return packForTransport(result);
