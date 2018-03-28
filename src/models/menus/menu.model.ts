@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import * as Path from 'path';
 import { CATEGORIES } from '../category.model';
 
+<<<<<<< HEAD
 export interface MenusMap {
 	resterauntId: string;
 	menu: {[props: string]: any};
@@ -15,6 +16,14 @@ export interface MenusMap {
  * @returns {Promise<Map<string, Set<FoodProduct>>>}
  */
 export async function scrapeMenuData(): Promise<Map<string, Set<FoodProduct>>> {
+=======
+/**
+ * fetchMenuData() Retrieves all html files form child 'html' dir and
+ * builds and initializes a new FoodProduct class.
+ * @returns {Promise<Map<string, Set<FoodProduct>>>}
+ */
+export async function fetchMenuData(): Promise<Map<string, Set<FoodProduct>>> {
+>>>>>>> a34d7235fa19f9568b489dbbf81285448d999742
 
 	// HTML Import
 
@@ -41,6 +50,7 @@ export async function scrapeMenuData(): Promise<Map<string, Set<FoodProduct>>> {
 
 			let tags: string[] = [];
 
+<<<<<<< HEAD
 			const tds = row.getElementsByTagName('td');
 			if (tds.length > 0) {
 				console.log('TDs', tds[0].innerHTML);
@@ -56,6 +66,20 @@ export async function scrapeMenuData(): Promise<Map<string, Set<FoodProduct>>> {
 				}
 				foodProducts.add(foodProduct);
 			}
+=======
+			foodProduct.foodName =  row.getElementsByTagName('td')[0].innerHTML;
+			for (let j = 1; j < CATEGORIES.length + 1; j++) {
+
+			if (row[j]) {
+					const ex: string = row[j].innerHTML;
+					if (ex === 'x') {
+						tags = [...tags, CATEGORIES[j]];
+					}
+					foodProduct.tags = tags;
+				}
+			}
+			foodProducts.add(foodProduct);
+>>>>>>> a34d7235fa19f9568b489dbbf81285448d999742
 		}
 		menus.set(brand, foodProducts);
 	}
