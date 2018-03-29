@@ -1,6 +1,5 @@
 import { RequestEvent } from '../models/request-event.interface';
 import { searchEvents } from '../events/search.event';
-import { generateReport } from './search.manager';
 import SocketIO = require('socket.io');
 
 export class EventsManager {
@@ -19,15 +18,6 @@ export class EventsManager {
 				const result = await searchEvents(requestEvent)
 					.catch((err) => console.log('error events manager', err));
 				callback(result);
-		});
-
-		this.socket.on(
-			'GET_REPORT',
-			async (
-				requestEvent: RequestEvent,
-				callback: any) => {
-			const result = await generateReport(requestEvent);
-			callback(result);
 		});
 	}
 
