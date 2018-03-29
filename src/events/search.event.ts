@@ -1,7 +1,7 @@
 import { packForTransport, RequestEvent } from '../models/request-event.interface';
-import { instantSearch, itemsSearch, nutrientsList } from '../workers/nutritionix.worker';
+import { nutrientsList } from '../workers/nutritionix.worker';
 import { fullReport } from '../workers/usda.worker';
-import { getFilteredFastFoodList } from '../workers/food.worker';
+import { fastFoodItemsByCategory, getFastFoodResults } from '../workers/food.worker';
 
 // tslint:disable
 export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
@@ -19,15 +19,14 @@ export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
 				.catch((err: {}) => console.log('err', err));
 			console.log('result', result);
 			return packForTransport(result);
-		case"FAST_FOOD_SEARCH":
-			result = await itemsSearch(body)
+		case"FAST_FOOD":
+			result = await getFastFoodResults(body.terms, body.categories)
 				.catch((err: {}) => console.log('err', err));
-			console.log('result', result);
 			return packForTransport(result);
-		case'PACKAGE_SEARCH':
-			result = await getFilteredFastFoodList(body, [])
+		case'FAST_FOOD_FILTER_CATEGORY':
+			result = await fastFoodItemsByCategory(body.terms, body.categories)
 				.catch((err: {}) => console.log('err', err));
-			console.log('result', result);
+			console.log(result);
 			return packForTransport(result);
 		default:
 			return {ok: false, message: 'Type Error'};

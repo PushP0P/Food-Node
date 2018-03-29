@@ -3,7 +3,7 @@ export function concatParams(base: string, params: Map<string, string>): string 
 	let url: string = `${base}?`;
 
 	params.forEach((value, key) => {
-		console.log('params', value, key);
+		console.log('params', key, value);
 		counter === 0
 			? url += `${key}=${value.replace(/ /g, '%20')}`
 			: url += `&${key}=${value.replace(/ /g, '%20')}`;

@@ -12,10 +12,11 @@ export interface EventResponseTransport {
 	message?: string;
 }
 
-export const packForTransport = (response: any): EventResponseTransport => {
+export const packForTransport = (payload: any): EventResponseTransport => {
+	console.log('packet', payload);
 	return {
 		ok: true,
-		body: response,
+		body: payload,
 		message: 'Successful Event'
 	};
 };

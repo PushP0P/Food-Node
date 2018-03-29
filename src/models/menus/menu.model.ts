@@ -38,10 +38,9 @@ export async function scrapeMenuData(): Promise<Map<string, Set<FoodProduct>>> {
 
 		foodProduct.brandName = brand;
 		for (let row of rows) {
-
 			let tags: string[] = [];
-
 			const tds = row.getElementsByTagName('td');
+
 			if (tds.length > 0) {
 				console.log('TDs', tds[0].innerHTML);
 				foodProduct.foodName = tds[0].innerHTML;

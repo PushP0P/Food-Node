@@ -1,6 +1,7 @@
 import { concatParams } from '../utilities/url.helpers';
 import * as https from 'https';
 import * as http from 'http';
+
 export interface ApiWorkerOptions {
 	endpoint: string;
 	params?: Map<string, string>;

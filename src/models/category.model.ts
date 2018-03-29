@@ -3,7 +3,7 @@
  * @type {string[]}
  */
 export const CATEGORIES = [
-	'Wheat Gluten',
+	'Gluten',
 	'Milk',
 	'Eggs',
 	'Meat',

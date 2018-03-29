@@ -7,6 +7,7 @@ export interface FoodProduct  {
 	brandName: string;
 	groupName: string;
 	metadata: FoodProductMeta;
+	categories: string[];
 	source: string;
 	ndbno: string;
 	tags: string[];
@@ -42,6 +43,7 @@ export class FoodProduct {
 	public tags: string[] = [];
 	public photo: FoodImages = <FoodImages> {};
 	public updatedAt: number = -1;
+	public categories: string[] = [];
 
 	constructor() {
 		this.updatedAt = Date.now();
