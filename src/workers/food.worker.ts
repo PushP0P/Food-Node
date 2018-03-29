@@ -4,7 +4,6 @@ import { groupSearch } from './usda.worker';
 import { LOCAL } from '../config/.local.config';
 import * as Rx from 'rxjs';
 import * as xlsx from 'xlsx';
-import { stringToTestString } from '../utilities/search.util';
 
 /**
  * Find fast food restaurants that match the search terms and filtered
@@ -92,7 +91,9 @@ export function sheetsToArray(filePath: string): any[] {
 	const sheets = xlsx.readFile(__dirname + filePath);
 	return sheets.SheetNames.reduce(
 		(acc: any[], name: string) => {
-			return acc.concat(xlsx.utils.sheet_to_json(sheets.Sheets[name]));
+			return acc.concat({
+				brand: name,
+				items: xlsx.utils.sheet_to_json(sheets.Sheets[name])});
 		},
 		[]
 	);
@@ -168,28 +169,35 @@ export async function fastFoodItemsByCategory(
 			'('
 		);
 	return await menus.reduce(
-		(response: any[], menuItem: {}) => {
-			const itemCols: string[] = Object.keys(menuItem);
+		(response: any[], menu: {brand: string, items: {}[]}) => {
+			const items = menu.items.reduce(
+				(itemsResponse: any[], menuItem: {}) => {
+					const itemCols: string[] = Object.keys(menuItem);
 
-			// If item contains category, return current accumulation.
-			for (let col of itemCols) {
-				if (categories[col]) {
-					return response;
-				}
-			}
-			const match = new RegExp(testString, 'gi').exec(menuItem[itemCols[0]]);
-			if (match) {
-				let categoryNames: string[] = [];
-				const foodProduct = new FoodProduct();
+					// If item contains category, return current accumulation.
+					for (let col of itemCols) {
+						if (categories[col]) {
+							return itemsResponse;
+						}
+					}
+					const match = new RegExp(testString, 'gi').exec(menuItem[itemCols[0]]);
+					if (match) {
+						let categoryNames: string[] = [];
+						const foodProduct = new FoodProduct();
 
-				for (let i = 1; i < itemCols.length; i++) {
-					categoryNames = categoryNames.concat(itemCols[i]);
-				}
-				foodProduct.foodName = menuItem[itemCols[0]];
-				foodProduct.categories = categoryNames;
-				return response.concat(foodProduct);
-			}
-			return response;
+						for (let i = 1; i < itemCols.length; i++) {
+							categoryNames = categoryNames.concat(itemCols[i]);
+						}
+						foodProduct.foodName = menuItem[itemCols[0]];
+						foodProduct.categories = categoryNames;
+						foodProduct.brandName = menu.brand;
+						return itemsResponse.concat(foodProduct);
+					}
+					return itemsResponse;
+				},
+				[]
+			);
+			return response.concat(items);
 		},
 		[]
 	);
