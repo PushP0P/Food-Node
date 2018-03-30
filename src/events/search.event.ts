@@ -8,9 +8,10 @@ export async function searchEvents(requestEvent: RequestEvent): Promise<any> {
 		case'FAST_FOOD_FILTER_CATEGORY':
 			const fastFoodCategoryResult = await fastFoodItemsByCategory(body.terms, body.categories)
 				.catch((err: {}) => console.log('err', err));
-			console.log(fastFoodCategoryResult);
 			return packForTransport(fastFoodCategoryResult);
+
 		default:
 			return {ok: false, message: 'Type Error'};
 	}
+
 }

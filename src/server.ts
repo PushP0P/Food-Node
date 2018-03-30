@@ -2,7 +2,7 @@ import * as https from 'https';
 import { EventsManager } from './managers/events.manager';
 import { SERVER_CONFIG } from './config/.local.config';
 import *  as SocketIO from 'socket.io';
-import { byRestaurantAllergensMenu, fastFoodItemsByCategory } from './workers/food.worker';
+import { initializeMenuStores } from './workers/menu.worker';
 
 export class Server {
 
@@ -31,9 +31,9 @@ export class Server {
 	constructor() {
 		this.init();
 		this.setupWS();
-		// fastFoodItemsByCategory('Burger', {Eggs: true})
-		// 	.then((result) => console.log('allergen menu done'))
-		// 	.catch((err) => console.log('allergen menu error', err));
+		// initializeMenuStores()
+		// 	.then(() => console.log('initMenuStores Done'))
+		// 	.catch((err: any) => console.log('Init Menu Error', err));
 	}
 
 	private setupWS(): void {

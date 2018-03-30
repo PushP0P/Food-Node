@@ -13,7 +13,6 @@ export interface EventResponseTransport {
 }
 
 export const packForTransport = (payload: any): EventResponseTransport => {
-	console.log('packet', payload);
 	return {
 		ok: true,
 		body: payload,

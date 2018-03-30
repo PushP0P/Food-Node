@@ -3,34 +3,32 @@ import { FoodProductModel } from './attributes/food-product.attributes';
 
 export function foodProductModel(DataTypes: SequelizeStatic, sequelize: Sequelize): FoodProductModel {
 	return sequelize.define('food_product', {
+		id: {
+			type: DataTypes.UUID,
+			primaryKey: true,
+			defaultValue: DataTypes.UUIDV4
+		},
 		ndbno: {
 			type: DataTypes.STRING,
-			primaryKey: true,
 		},
-		food_name: {
+		foodName: {
 			type: DataTypes.STRING,
-			allowNull: true
 		},
-		short_description: {
+		brandName: {
 			type: DataTypes.STRING,
-			allowNull: true
 		},
-		food_group: {
+		metadata: {
 			type: DataTypes.STRING,
-			allowNull: true
 		},
-		is_rated:{
-			type: DataTypes.BOOLEAN,
-			allowNull: true
-		},
-		avg_rating: {
-			type: DataTypes.INTEGER,
-			allowNull: true
-		},
-		ingredient_list_desc: {
+		photo: {
 			type: DataTypes.STRING,
-			allowNull: true
 		},
+		updatedAt: {
+			type: DataTypes.STRING,
+		},
+		categories: {
+			type: DataTypes.STRING,
+		}
 	},{
 		freezeTableName: true,
 		paranoid: true,

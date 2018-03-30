@@ -1,14 +1,13 @@
 import * as Sequelize from 'sequelize';
 
 export interface FoodProductAttributes {
-	ndbno: string;
-	food_name: string;
-	short_description: string;
-	food_group: string;
-	is_rated: boolean;
-	avg_rating: number;
-	ingredient_list_desc: string;
-	categories: string;
+	id?: string;
+	foodName: string;
+	brandName: string;
+	metadata?: string;
+	photo?: string;
+	updatedAt?: string | number | Date;
+	categories: string | string[];
 }
 
 export interface FoodProductInstance extends Sequelize.Instance<FoodProductAttributes>, FoodProductAttributes {}

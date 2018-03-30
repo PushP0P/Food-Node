@@ -22,7 +22,6 @@ export class EventsManager {
 	}
 
 	private userEvents(): void {
-
 		this.socket.on(
 			'REVIEW',
 			(event: any, callback: any) => {
@@ -34,6 +33,17 @@ export class EventsManager {
 			callback: (res: any) => any) => {
 
 		});
+	}
 
+	private menuEvents(): void {
+
+		this.socket.on(
+			'CREATE',
+			(
+				event: RequestEvent,
+				callback: (res: any) => any
+			) => {
+
+		});
 	}
 }
